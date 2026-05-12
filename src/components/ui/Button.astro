@@ -1,0 +1,67 @@
+---
+type Variant = 'primary' | 'secondary' | 'ghost';
+type Size = 'sm' | 'md' | 'lg';
+
+interface Props {
+  variant?: Variant;
+  size?: Size;
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  href,
+  type = 'button',
+  disabled = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const base = [
+  'inline-flex items-center justify-center gap-2',
+  'font-body font-medium rounded-sm',
+  'transition-colors duration-150',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sage-700',
+  'disabled:opacity-50 disabled:pointer-events-none',
+].join(' ');
+
+const variants: Record<Variant, string> = {
+  primary:   'bg-sage-500 text-paper hover:bg-sage-700 active:bg-sage-900',
+  secondary: 'border border-sage-500 text-sage-700 hover:bg-sage-50 active:bg-sage-100',
+  ghost:     'text-sage-700 hover:bg-sage-50 active:bg-sage-100',
+};
+
+const sizes: Record<Size, string> = {
+  sm: 'text-sm px-4 py-2',
+  md: 'text-base px-6 py-3',
+  lg: 'text-lg px-8 py-4',
+};
+
+const Tag = href ? 'a' : 'button';
+---
+
+{
+  Tag === 'a' ? (
+    <a
+      href={href}
+      class:list={[base, variants[variant], sizes[size], className]}
+      {...rest}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button
+      type={type}
+      disabled={disabled}
+      class:list={[base, variants[variant], sizes[size], className]}
+      {...rest}
+    >
+      <slot />
+    </button>
+  )
+}

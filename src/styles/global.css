@@ -1,13 +1,49 @@
 @import "tailwindcss";
 @import "./tokens.css";
-@import "@fontsource/fraunces/400.css";
-@import "@fontsource/fraunces/600.css";
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
 
+/* Variable fonts — opsz entry gives wght + opsz axes */
+@import "@fontsource-variable/fraunces/opsz.css";
+@import "@fontsource-variable/inter";
+
+/* ---------- Tailwind v4 theme ---------- */
+@theme {
+  /* Sage scale — verified WCAG AA on --color-paper */
+  --color-sage-50: #f2f5ee;
+  --color-sage-100: #e1e9d5;
+  --color-sage-300: #a8be8e;
+  --color-sage-500: #567049;
+  --color-sage-700: #354730;
+  --color-sage-900: #182119;
+
+  /* Named palette */
+  --color-ink: #111210;
+  --color-ink-soft: #3d4039;
+  --color-paper: #f8f6f1;
+  --color-cream: #fdf9f2;
+  --color-terracotta: #c55c3a;
+  --color-mustard: #c49928;
+
+  /* Font families */
+  --font-display: 'Fraunces Variable', 'Fraunces', Georgia, serif;
+  --font-body: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+}
+
+/* Custom container utilities */
+@utility max-w-content {
+  max-width: 80rem;
+}
+@utility max-w-wide {
+  max-width: 90rem;
+}
+@utility max-w-prose {
+  max-width: 65ch;
+}
+
+/* ---------- Base ---------- */
 html {
   color-scheme: light;
+  font-optical-sizing: auto;
 }
 
 *,
@@ -43,4 +79,86 @@ a {
 ul,
 ol {
   list-style: none;
+}
+
+/* ---------- Prose component styles ---------- */
+.prose-pan {
+  line-height: var(--leading-relaxed);
+  max-width: var(--max-prose);
+}
+
+.prose-pan > * + * {
+  margin-top: var(--space-5);
+}
+
+.prose-pan h2,
+.prose-pan h3,
+.prose-pan h4 {
+  font-family: var(--font-display);
+  line-height: var(--leading-snug);
+  margin-top: var(--space-10);
+  margin-bottom: var(--space-3);
+}
+
+.prose-pan h2 { font-size: var(--text-2xl); }
+.prose-pan h3 { font-size: var(--text-xl); }
+.prose-pan h4 { font-size: var(--text-lg); }
+
+.prose-pan a {
+  color: var(--color-sage-700);
+  text-decoration: underline;
+  text-decoration-color: var(--color-sage-300);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--duration-fast) ease;
+}
+
+.prose-pan a:hover {
+  text-decoration-color: var(--color-sage-700);
+}
+
+.prose-pan a:focus-visible {
+  outline: 2px solid var(--color-sage-700);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.prose-pan ul,
+.prose-pan ol {
+  padding-left: var(--space-6);
+}
+
+.prose-pan ul {
+  list-style: disc;
+}
+
+.prose-pan ol {
+  list-style: decimal;
+}
+
+.prose-pan li + li {
+  margin-top: var(--space-2);
+}
+
+.prose-pan strong {
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.prose-pan em {
+  font-style: italic;
+}
+
+.prose-pan blockquote {
+  border-left: 3px solid var(--color-sage-300);
+  padding-left: var(--space-5);
+  font-style: italic;
+  color: var(--fg-muted);
+}
+
+.prose-pan code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-sage-50);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
 }

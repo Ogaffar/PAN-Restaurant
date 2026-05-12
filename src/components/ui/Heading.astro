@@ -1,0 +1,21 @@
+---
+interface Props {
+  level?: 1 | 2 | 3 | 4;
+  class?: string;
+}
+
+const { level = 1, class: className } = Astro.props;
+
+const Tag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4';
+
+const sizes: Record<1 | 2 | 3 | 4, string> = {
+  1: 'text-5xl lg:text-7xl font-display leading-[1.05] tracking-[-0.025em]',
+  2: 'text-4xl lg:text-5xl font-display leading-[1.1] tracking-[-0.02em]',
+  3: 'text-2xl lg:text-3xl font-display leading-[1.25]',
+  4: 'text-xl lg:text-2xl font-display leading-[1.3]',
+};
+---
+
+<Tag class:list={[sizes[level], className]}>
+  <slot />
+</Tag>

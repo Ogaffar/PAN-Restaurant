@@ -1,0 +1,255 @@
+---
+import Base from '../layouts/Base.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import Eyebrow from '../components/ui/Eyebrow.astro';
+import Heading from '../components/ui/Heading.astro';
+import Prose from '../components/ui/Prose.astro';
+import Button from '../components/ui/Button.astro';
+import Link from '../components/ui/Link.astro';
+
+type ColorSwatch = { name: string; val: string };
+
+const colors: ColorSwatch[] = [
+  { name: 'sage-50',    val: '#f2f5ee' },
+  { name: 'sage-100',   val: '#e1e9d5' },
+  { name: 'sage-300',   val: '#a8be8e' },
+  { name: 'sage-500',   val: '#567049' },
+  { name: 'sage-700',   val: '#354730' },
+  { name: 'sage-900',   val: '#182119' },
+  { name: 'ink',        val: '#111210' },
+  { name: 'ink-soft',   val: '#3d4039' },
+  { name: 'paper',      val: '#f8f6f1' },
+  { name: 'cream',      val: '#fdf9f2' },
+  { name: 'terracotta', val: '#c55c3a' },
+  { name: 'mustard',    val: '#c49928' },
+];
+
+type ButtonVariant = 'primary' | 'secondary' | 'ghost';
+const buttonVariants: ButtonVariant[] = ['primary', 'secondary', 'ghost'];
+
+type SectionTone = 'paper' | 'cream' | 'sage' | 'ink';
+const sectionTones: SectionTone[] = ['paper', 'cream', 'sage', 'ink'];
+
+const isDev = import.meta.env.DEV;
+---
+
+<Base title="PAN Style Guide" description="Internal design system reference">
+  {!isDev && <meta http-equiv="refresh" content="0;url=/" slot="head" />}
+
+  {isDev && (
+    <div class="bg-paper min-h-screen">
+
+      <div class="bg-ink text-paper py-10">
+        <Container>
+          <p class="font-body text-xs tracking-[0.18em] uppercase text-sage-300 mb-3">
+            Internal &middot; Dev only
+          </p>
+          <h1 class="font-display text-5xl tracking-[-0.025em]">PAN Style Guide</h1>
+          <p class="mt-3 font-body" style="color:#9ca89a">
+            Design system reference &mdash; visible only in development
+          </p>
+        </Container>
+      </div>
+
+      <div class="bg-sage-50 border-b border-sage-100 py-4">
+        <Container>
+          <nav class="flex flex-wrap gap-x-6 gap-y-2 font-body text-sm text-sage-700">
+            <a href="#colors"     class="hover:text-sage-900 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700">Colors</a>
+            <a href="#typography" class="hover:text-sage-900 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700">Typography</a>
+            <a href="#buttons"    class="hover:text-sage-900 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700">Buttons</a>
+            <a href="#sections"   class="hover:text-sage-900 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700">Sections</a>
+            <a href="#prose"      class="hover:text-sage-900 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700">Prose</a>
+            <a href="#links"      class="hover:text-sage-900 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700">Links</a>
+          </nav>
+        </Container>
+      </div>
+
+      <section id="colors" class="py-16">
+        <Container>
+          <h2 class="font-display text-3xl tracking-[-0.02em] mb-2">Color Tokens</h2>
+          <p class="font-body text-sm text-ink-soft mb-8">
+            All @theme primitives. sage-500 on paper passes WCAG AA (4.65:1).
+            ink on paper and cream both exceed AAA.
+          </p>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {colors.map(({ name, val }) => (
+              <div class="rounded-md overflow-hidden border border-sage-100 shadow-sm">
+                <div class="h-16" style={`background:${val}`} />
+                <div class="bg-white px-3 py-2">
+                  <p class="font-mono text-xs font-medium text-ink">{name}</p>
+                  <p class="font-mono text-[10px] text-ink-soft mt-0.5">{val}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="rounded-md p-5 bg-paper border border-sage-100">
+              <p class="font-body text-sm text-sage-500 font-medium">sage-500 on paper</p>
+              <p class="font-mono text-xs text-ink-soft mt-1">4.65:1 WCAG AA pass</p>
+            </div>
+            <div class="rounded-md p-5 bg-paper border border-sage-100">
+              <p class="font-body text-sm text-ink font-medium">ink on paper</p>
+              <p class="font-mono text-xs text-ink-soft mt-1">~17.6:1 WCAG AAA pass</p>
+            </div>
+            <div class="rounded-md p-5 bg-cream border border-sage-100">
+              <p class="font-body text-sm text-ink font-medium">ink on cream</p>
+              <p class="font-mono text-xs text-ink-soft mt-1">~18.3:1 WCAG AAA pass</p>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <hr class="border-sage-100" />
+
+      <section id="typography" class="py-16">
+        <Container>
+          <h2 class="font-display text-3xl tracking-[-0.02em] mb-8">Typography</h2>
+          <div class="space-y-10">
+            <div>
+              <Eyebrow class="mb-4">Fraunces Variable &mdash; Display</Eyebrow>
+              <div class="space-y-4">
+                <Heading level={1}>Heading 1 &mdash; The art of gathering</Heading>
+                <Heading level={2}>Heading 2 &mdash; Seasonal &amp; Local</Heading>
+                <Heading level={3}>Heading 3 &mdash; From the garden</Heading>
+                <Heading level={4}>Heading 4 &mdash; A note on sourcing</Heading>
+              </div>
+            </div>
+            <div>
+              <Eyebrow class="mb-4">Eyebrow Component</Eyebrow>
+              <Eyebrow>Starters &middot; Small Plates &middot; Mains</Eyebrow>
+            </div>
+            <div>
+              <Eyebrow class="mb-4">Inter Variable &mdash; Body</Eyebrow>
+              <div class="space-y-3">
+                <p class="font-body text-lg text-ink">Large &mdash; Pan sources from farms within 150 miles of Fayetteville.</p>
+                <p class="font-body text-base text-ink">Base &mdash; Our menu changes with the seasons, reflecting what our farmers are proud of each week.</p>
+                <p class="font-body text-sm text-ink-soft">Small &mdash; Please inform your server of any dietary restrictions or allergies.</p>
+                <p class="font-body text-xs text-ink-soft tracking-[0.04em]">Caption &mdash; Open Tuesday&ndash;Sunday, 5 pm&ndash;close.</p>
+              </div>
+            </div>
+            <div>
+              <Eyebrow class="mb-4">Monospace</Eyebrow>
+              <p class="font-mono text-sm text-ink bg-sage-50 rounded-md px-4 py-3 border border-sage-100">const menu = await getCollection(&apos;menu&apos;);</p>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <hr class="border-sage-100" />
+
+      <section id="buttons" class="py-16">
+        <Container>
+          <h2 class="font-display text-3xl tracking-[-0.02em] mb-8">Buttons</h2>
+          <div class="space-y-10">
+            {buttonVariants.map((variant) => (
+              <div>
+                <Eyebrow class="mb-4">{variant}</Eyebrow>
+                <div class="flex flex-wrap items-center gap-3">
+                  <Button variant={variant} size="sm">Small</Button>
+                  <Button variant={variant} size="md">Medium</Button>
+                  <Button variant={variant} size="lg">Large</Button>
+                  <Button variant={variant} size="md" href="#buttons">As link</Button>
+                  <Button variant={variant} size="md" disabled={true}>Disabled</Button>
+                </div>
+              </div>
+            ))}
+            <div class="bg-ink rounded-lg p-6">
+              <Eyebrow class="mb-4" style="color:var(--color-sage-300)">On dark bg</Eyebrow>
+              <div class="flex flex-wrap gap-3">
+                <Button variant="primary"   size="md">Reserve a table</Button>
+                <Button variant="secondary" size="md">View menu</Button>
+                <Button variant="ghost"     size="md" class="!text-paper hover:!bg-white/10">Learn more</Button>
+              </div>
+            </div>
+            <div>
+              <Eyebrow class="mb-3">Focus ring &mdash; tab to verify</Eyebrow>
+              <p class="font-body text-sm text-ink-soft mb-4">Tab through to see sage-700 ring-offset-2 on each interactive element.</p>
+              <div class="flex flex-wrap gap-3">
+                <Button variant="primary"   size="md">Focusable 1</Button>
+                <Button variant="secondary" size="md">Focusable 2</Button>
+                <Button variant="ghost"     size="md">Focusable 3</Button>
+                <Button variant="primary"   size="md" href="#buttons">Link button</Button>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <hr class="border-sage-100" />
+
+      <section id="sections" class="py-16">
+        <Container>
+          <h2 class="font-display text-3xl tracking-[-0.02em] mb-2">Section Tones</h2>
+          <p class="font-body text-sm text-ink-soft mb-8">Each tone pairs a background with the appropriate foreground color.</p>
+        </Container>
+        <div class="space-y-2 mt-4">
+          {sectionTones.map((tone) => (
+            <Section tone={tone} class="py-10">
+              <Container>
+                <Eyebrow class={(tone === 'sage' || tone === 'ink') ? 'text-sage-300' : ''}>
+                  tone=&quot;{tone}&quot;
+                </Eyebrow>
+                <h3 class="font-display text-2xl mt-2">The quick brown fox jumps</h3>
+                <p class="font-body text-base mt-2 max-w-prose opacity-80">Body text remains legible against this background.</p>
+              </Container>
+            </Section>
+          ))}
+        </div>
+      </section>
+
+      <hr class="border-sage-100" />
+
+      <section id="prose" class="py-16">
+        <Container>
+          <h2 class="font-display text-3xl tracking-[-0.02em] mb-8">Prose</h2>
+          <Prose>
+            <h2>Rooted in Arkansas</h2>
+            <p>Pan began with a simple belief: the best meals come from knowing your farmers, your fishers, and your neighbors.</p>
+            <h3>Our sourcing philosophy</h3>
+            <p>We partner with small farms within a 150-mile radius. When a crop is at its peak, we build the menu around it &mdash; not the other way around.</p>
+            <ul>
+              <li>Heritage grains from Osage Mills</li>
+              <li>Pastured eggs from Hillcrest Farm</li>
+              <li>Wild-caught catfish from the White River</li>
+            </ul>
+            <p>Questions? Email <a href="mailto:hello@panfayetteville.com">hello@panfayetteville.com</a>.</p>
+            <blockquote>&ldquo;The land gives, and we try our best to honor that.&rdquo; &mdash; Chef</blockquote>
+            <p>Use <code>getCollection(&apos;menu&apos;)</code> to fetch items from the content layer.</p>
+          </Prose>
+        </Container>
+      </section>
+
+      <hr class="border-sage-100" />
+
+      <section id="links" class="py-16">
+        <Container>
+          <h2 class="font-display text-3xl tracking-[-0.02em] mb-8">Links</h2>
+          <div class="space-y-6">
+            <div>
+              <Eyebrow class="mb-3">Link component</Eyebrow>
+              <p class="font-body text-base text-ink max-w-prose leading-relaxed">
+                Pan is located at <Link href="#">15 E Center St, Fayetteville, AR</Link>.
+                Reservations via <Link href="#">OpenTable</Link>
+                or <Link href="tel:+14797234567">(479) 723-4567</Link>.
+              </p>
+            </div>
+            <div class="bg-ink rounded-lg p-6">
+              <Eyebrow class="mb-3" style="color:var(--color-sage-300)">On dark bg</Eyebrow>
+              <p class="font-body text-base text-paper max-w-prose leading-relaxed">
+                Tab to verify the <Link href="#links" class="text-sage-300 decoration-sage-500 focus-visible:ring-sage-300">Link component</Link> focus ring on dark backgrounds.
+              </p>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <div class="bg-sage-50 border-t border-sage-100 py-8">
+        <Container>
+          <p class="font-body text-xs text-ink-soft">PAN Style Guide &middot; Dev only &middot; Astro {Astro.generator}</p>
+        </Container>
+      </div>
+
+    </div>
+  )}
+</Base>

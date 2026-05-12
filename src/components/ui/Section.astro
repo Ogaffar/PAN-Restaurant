@@ -1,0 +1,22 @@
+---
+type Tone = 'paper' | 'cream' | 'sage' | 'ink';
+
+interface Props {
+  tone?: Tone;
+  class?: string;
+  id?: string;
+}
+
+const { tone = 'paper', class: className, id } = Astro.props;
+
+const tones: Record<Tone, string> = {
+  paper: 'bg-paper text-ink',
+  cream: 'bg-cream text-ink',
+  sage:  'bg-sage-500 text-paper',
+  ink:   'bg-ink text-paper',
+};
+---
+
+<section id={id} class:list={[tones[tone], 'py-16 lg:py-24', className]}>
+  <slot />
+</section>

@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import frauncesFontUrl from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url';
+import interFontUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
 interface Props {
   title?: string;
@@ -22,6 +24,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Font preloads — prevents layout shift on display & body fonts -->
+    <link rel="preload" href={frauncesFontUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interFontUrl} as="font" type="font/woff2" crossorigin />
 
     <title>{title}</title>
     <meta name="description" content={description} />
