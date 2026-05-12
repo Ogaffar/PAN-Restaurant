@@ -1,13 +1,15 @@
 ---
 type Tone = 'paper' | 'cream' | 'sage' | 'ink';
+type Size = 'sm' | 'md' | 'lg';
 
 interface Props {
   tone?: Tone;
+  size?: Size;
   class?: string;
   id?: string;
 }
 
-const { tone = 'paper', class: className, id } = Astro.props;
+const { tone = 'paper', size = 'md', class: className, id } = Astro.props;
 
 const tones: Record<Tone, string> = {
   paper: 'bg-paper text-ink',
@@ -15,8 +17,14 @@ const tones: Record<Tone, string> = {
   sage:  'bg-sage-500 text-paper',
   ink:   'bg-ink text-paper',
 };
+
+const sizes: Record<Size, string> = {
+  sm: 'py-12 lg:py-16',
+  md: 'py-16 lg:py-24',
+  lg: 'py-24 lg:py-32',
+};
 ---
 
-<section id={id} class:list={[tones[tone], 'py-16 lg:py-24', className]}>
+<section id={id} class:list={[tones[tone], sizes[size], className]}>
   <slot />
 </section>

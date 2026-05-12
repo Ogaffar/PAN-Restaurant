@@ -1,5 +1,5 @@
 ---
-type Variant = 'primary' | 'secondary' | 'ghost';
+type Variant = 'primary' | 'secondary' | 'ghost' | 'terracotta';
 type Size = 'sm' | 'md' | 'lg';
 
 interface Props {
@@ -31,9 +31,10 @@ const base = [
 ].join(' ');
 
 const variants: Record<Variant, string> = {
-  primary:   'bg-sage-500 text-paper hover:bg-sage-700 active:bg-sage-900',
-  secondary: 'border border-sage-500 text-sage-700 hover:bg-sage-50 active:bg-sage-100',
-  ghost:     'text-sage-700 hover:bg-sage-50 active:bg-sage-100',
+  primary:    'bg-sage-500 text-paper hover:bg-sage-700 active:bg-sage-900',
+  secondary:  'border border-sage-500 text-sage-700 hover:bg-sage-50 active:bg-sage-100',
+  ghost:      'text-sage-700 hover:bg-sage-50 active:bg-sage-100',
+  terracotta: 'bg-terracotta text-paper hover:bg-[#a84c30] active:bg-[#8f3f27]',
 };
 
 const sizes: Record<Size, string> = {

@@ -1,19 +1,352 @@
 ---
+import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import Section from '../components/ui/Section.astro';
+import Container from '../components/ui/Container.astro';
+import Heading from '../components/ui/Heading.astro';
+import Eyebrow from '../components/ui/Eyebrow.astro';
+import Button from '../components/ui/Button.astro';
+import Link from '../components/ui/Link.astro';
+import { getFeaturedMenu } from '../lib/menu';
+import { getTodayHours, getTodayIndex, WEEK_HOURS } from '../lib/hours';
+
+// TODO(owner): replace with final pro photography
+import heroSrc from '../assets/images/hero-leclair.jpg';
+// TODO(owner): replace with interior celery-green-walls shot
+import interiorSrc from '../assets/images/interior.jpg';
+
+const TOAST_URL = 'https://www.toasttab.com/pan-fayetteville';
+
+const heroPreload = await getImage({ src: heroSrc, width: 1200, height: 1500, format: 'webp' });
+const featured = await getFeaturedMenu();
+const todayLine = getTodayHours();
+const todayIndex = getTodayIndex();
 ---
 
-<Base title="Pan — coming soon.">
-  <div
-    style="
-      min-height: calc(100svh - var(--header-height));
-      display: grid;
-      place-items: center;
-      font-family: var(--font-display);
-      font-size: var(--text-3xl);
-      color: var(--fg-muted);
-      letter-spacing: var(--tracking-tight);
-    "
-  >
-    Pan &mdash; coming soon.
-  </div>
+<Base
+  title="PAN — Fayetteville's Best Sandwich Shop"
+  description="Chef-driven deli in downtown Fayetteville, NC. House-made sandwiches, locally sourced ingredients. Best Sandwich Shop 2024 & 2025."
+>
+  <link slot="head" rel="preload" as="image" href={heroPreload.src} type="image/webp" fetchpriority="high" />
+
+  <!-- ─── 1. HERO ─────────────────────────────────────────────── -->
+  <section aria-label="Welcome to PAN" class="bg-paper overflow-hidden">
+    <div class="grid lg:grid-cols-2 lg:min-h-[calc(100svh-var(--header-height))]">
+
+      <!-- Image: first in DOM (top on mobile, right column on desktop) -->
+      <div class="relative h-[50svh] max-h-[50svh] lg:h-auto lg:max-h-none lg:order-2">
+        <Image
+          src={heroSrc}
+          alt="The Leclair — prosciutto, brie, fig jam, and arugula on toasted sourdough"
+          width={1200}
+          height={1500}
+          format="webp"
+          loading="eager"
+          fetchpriority="high"
+          class="absolute inset-0 w-full h-full object-cover"
+        />
+      </div>
+
+      <!-- Text content (left on desktop) -->
+      <div class="lg:order-1 flex flex-col justify-center px-6 py-12 lg:px-12 xl:px-16 lg:py-16">
+        <div class="max-w-[34rem]">
+          <h1 class="font-display text-[clamp(2.25rem,5vw,4.5rem)] leading-[1.05] tracking-[-0.025em] text-ink">
+            Gorgeous sandwiches, made by hand in downtown Fayetteville.
+          </h1>
+          <p class="mt-5 text-xl text-ink-soft leading-relaxed">
+            Chef-driven deli. Locally sourced. Best Sandwich Shop 2024 &amp; 2025.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <Button href={TOAST_URL} variant="terracotta" size="lg" target="_blank" rel="noopener">
+              Order on Toast
+            </Button>
+            <Button href="/menu" variant="secondary" size="lg">
+              See the menu
+            </Button>
+          </div>
+          <p class="mt-5 text-sm text-ink-soft">
+            {todayLine} &middot; 105 Hay St &middot; <a href="tel:+19104913105" class="hover:text-ink transition-colors">(910) 491-3105</a>
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── 2. AWARDS STRIP ──────────────────────────────────────── -->
+  <Section tone="cream" size="sm">
+    <Container>
+      <div class="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-sage-100">
+        <div class="py-8 md:py-0 md:px-10 first:pt-0 md:first:pl-0">
+          <Eyebrow>Award</Eyebrow>
+          <p class="mt-2 font-body font-semibold text-lg text-ink leading-snug">
+            Best Sandwich Shop &middot; Up &amp; Coming Weekly 2024 &amp; 2025
+          </p>
+        </div>
+        <div class="py-8 md:py-0 md:px-10">
+          <Eyebrow>Community</Eyebrow>
+          <p class="mt-2 font-body font-semibold text-lg text-ink leading-snug">
+            4.9&#9733; on Google &middot; 220+ reviews
+          </p>
+        </div>
+        <div class="py-8 md:py-0 md:px-10 last:pb-0 md:last:pr-0">
+          <Eyebrow>Press</Eyebrow>
+          <p class="mt-2 font-body font-semibold text-lg text-ink leading-snug">
+            Featured in BizFayetteville &amp; UCW
+          </p>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 3. FAN FAVORITES ─────────────────────────────────────── -->
+  <Section tone="paper" id="fan-favorites">
+    <Container>
+      <Eyebrow>From the Board</Eyebrow>
+      <Heading level={2} class="mt-3 max-w-lg">
+        Three sandwiches people drive across town for.
+      </Heading>
+
+      <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+        {featured.map((item) => (
+          <article class="group flex flex-col">
+            <div class="relative aspect-square bg-sage-50 overflow-hidden rounded-sm">
+              {item.data.image ? (
+                <Image
+                  src={item.data.image}
+                  alt={item.data.imageAlt ?? item.data.name}
+                  width={480}
+                  height={480}
+                  class="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:-translate-y-[2px]"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="w-full h-full bg-gradient-to-br from-sage-100 to-cream flex items-end p-5 transition-transform duration-300 ease-out group-hover:-translate-y-[2px]">
+                  <span class="text-xs text-sage-500 font-medium tracking-widest uppercase">Photo coming</span>
+                </div>
+              )}
+            </div>
+
+            <div class="mt-5 flex flex-col flex-1">
+              <h3 class="font-display text-2xl text-ink leading-snug">{item.data.name}</h3>
+              <p class="mt-2 text-sm text-ink-soft leading-relaxed line-clamp-2">{item.data.description}</p>
+
+              <div class="mt-3 flex flex-wrap gap-1.5">
+                {item.data.ingredients.slice(0, 3).map((ing) => (
+                  <span class="inline-block px-2.5 py-1 rounded-full bg-sage-50 border border-sage-100 text-xs text-ink-soft font-medium">
+                    {ing.toLowerCase()}
+                  </span>
+                ))}
+              </div>
+
+              <a
+                href={TOAST_URL}
+                target="_blank"
+                rel="noopener"
+                class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-terracotta hover:text-[#a84c30] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-terracotta rounded-sm"
+              >
+                Order this <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div class="mt-12 text-center">
+        <Link href="/menu">See the full menu &rarr;</Link>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 4. STORY TEASER ──────────────────────────────────────── -->
+  <Section tone="sage" id="story">
+    <Container>
+      <div class="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+        <div class="relative aspect-[4/3] overflow-hidden rounded-sm">
+          {/* TODO(owner): replace with interior celery-green-walls pro shot */}
+          <Image
+            src={interiorSrc}
+            alt="The dining room at PAN — warm light and house-made character"
+            width={960}
+            height={720}
+            class="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+
+        <div>
+          <Eyebrow class="text-sage-300">Our Story</Eyebrow>
+          <Heading level={2} class="mt-3 text-paper">
+            A food renaissance, from Fayetteville.
+          </Heading>
+          <p class="mt-6 text-sage-100 leading-relaxed">
+            PAN was born from a simple conviction: that Fayetteville deserves restaurants built
+            on craft, not convenience. Every sandwich starts with locally sourced ingredients,
+            house-made condiments, and bread worth talking about.
+          </p>
+
+          <blockquote class="mt-8 border-l-2 border-sage-300 pl-5">
+            <p class="font-display italic text-xl text-paper leading-relaxed">
+              &ldquo;Fay is the next city aching for a food renaissance. I want to be a part
+              of the movement &mdash; to get back to good chef-driven food.&rdquo;
+            </p>
+            <footer class="mt-3 text-sm text-sage-200 not-italic">
+              &mdash; Brian Graybill, <cite>Up &amp; Coming Weekly</cite>
+            </footer>
+          </blockquote>
+
+          <a
+            href="/story"
+            class="mt-8 inline-flex items-center gap-1 text-sm font-medium text-paper underline decoration-sage-300 underline-offset-4 hover:decoration-paper transition-[text-decoration-color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-paper rounded-sm"
+          >
+            Read our story <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 5. VISIT BLOCK ───────────────────────────────────────── -->
+  <Section tone="paper" id="visit">
+    <Container>
+      <Eyebrow>Plan your visit</Eyebrow>
+      <Heading level={2} class="mt-3 mb-10">Come find us.</Heading>
+
+      <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+
+        <!-- Hours card -->
+        <div class="bg-sage-50 rounded-sm p-7 lg:p-8">
+          <h3 class="font-display text-2xl text-ink">Hours</h3>
+          <dl class="mt-5 space-y-2">
+            {WEEK_HOURS.map((h, i) => (
+              <div class:list={[
+                'flex justify-between text-sm gap-4',
+                i === todayIndex ? 'font-semibold text-sage-700' : 'text-ink-soft',
+              ]}>
+                <dt>{h.fullDay}</dt>
+                <dd class="tabular-nums shrink-0">
+                  {h.open && h.close ? `${h.open} – ${h.close}` : 'Closed'}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <!-- Address card -->
+        <div class="rounded-sm border border-sage-100 overflow-hidden flex flex-col">
+          <!--
+            TODO(owner): replace placeholder with Mapbox static image:
+            https://api.mapbox.com/styles/v1/mapbox/light-v11/static/
+            pin-s+c55c3a(-78.8786,35.0527)/-78.8786,35.0527,14,0/600x380@2x
+            ?access_token=YOUR_MAPBOX_TOKEN
+          -->
+          <div class="aspect-video bg-sage-100 flex items-center justify-center shrink-0">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" class="text-sage-300" aria-hidden="true">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor" />
+            </svg>
+          </div>
+
+          <div class="p-7 flex flex-col flex-1">
+            <h3 class="font-display text-2xl text-ink">Location</h3>
+            <address class="mt-3 text-sm text-ink-soft not-italic leading-relaxed">
+              105 Hay St<br />
+              Fayetteville, NC 28301
+            </address>
+            <div class="mt-auto pt-5 flex flex-col sm:flex-row gap-2">
+              <a
+                href="https://maps.google.com/?q=105+Hay+St,+Fayetteville,+NC+28301"
+                target="_blank"
+                rel="noopener"
+                class="flex-1 text-center text-xs font-medium border border-sage-300 text-sage-700 rounded-sm px-3 py-2 hover:bg-sage-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+              >
+                Google Maps
+              </a>
+              <a
+                href="https://maps.apple.com/?address=105+Hay+St,Fayetteville,NC,28301"
+                target="_blank"
+                rel="noopener"
+                class="flex-1 text-center text-xs font-medium border border-sage-300 text-sage-700 rounded-sm px-3 py-2 hover:bg-sage-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+              >
+                Apple Maps
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order card -->
+        <div
+          class="rounded-sm border p-7 lg:p-8 flex flex-col"
+          style="background: color-mix(in oklch, var(--color-terracotta) 8%, var(--color-paper)); border-color: color-mix(in oklch, var(--color-terracotta) 15%, transparent);"
+        >
+          <h3 class="font-display text-2xl text-ink">Order</h3>
+          <p class="mt-3 text-sm text-ink-soft leading-relaxed">
+            Order ahead for quick pickup. We&rsquo;ll have it ready when you walk in.
+          </p>
+          <div class="mt-auto pt-6 flex flex-col items-start gap-2">
+            <Button href={TOAST_URL} variant="terracotta" target="_blank" rel="noopener">
+              Order on Toast
+            </Button>
+            <p class="text-xs text-ink-soft">Pickup only</p>
+          </div>
+        </div>
+
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 6. PRESS STRIP ───────────────────────────────────────── -->
+  <Section tone="cream" size="sm" id="press-mentions">
+    <Container>
+      <Eyebrow class="text-center">In the press</Eyebrow>
+      <nav aria-label="Press coverage" class="mt-6 flex flex-wrap justify-center items-center gap-y-3">
+        {[
+          { name: 'Up & Coming Weekly',    href: '/press#ucw' },
+          { name: 'BizFayetteville',       href: '/press#bizfayetteville' },
+          { name: 'Fayetteville Observer', href: '/press#observer' },
+        ].map((pub, i, arr) => (
+          <span class="inline-flex items-center">
+            <a
+              href={pub.href}
+              class="font-display text-lg text-ink hover:text-sage-700 transition-colors px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded-sm"
+            >
+              {pub.name}
+            </a>
+            {i < arr.length - 1 && (
+              <span class="text-sage-300 select-none" aria-hidden="true">&middot;</span>
+            )}
+          </span>
+        ))}
+      </nav>
+    </Container>
+  </Section>
+
+  <!-- ─── 7. NEWSLETTER ────────────────────────────────────────── -->
+  <Section tone="paper" size="sm" id="newsletter">
+    <Container>
+      <div class="max-w-lg mx-auto text-center">
+        <Heading level={2} class="text-3xl lg:text-4xl">
+          Get the specials board in your inbox.
+        </Heading>
+        <p class="mt-4 text-ink-soft">
+          New sandwiches, seasonal specials, and the occasional love letter about bread.
+        </p>
+        <form action="/api/subscribe" method="POST" class="mt-8 flex flex-col sm:flex-row gap-3">
+          <label class="sr-only" for="newsletter-email">Email address</label>
+          <input
+            id="newsletter-email"
+            type="email"
+            name="email"
+            placeholder="your@email.com"
+            required
+            autocomplete="email"
+            class="flex-1 px-4 py-3 rounded-sm border border-sage-200 bg-cream text-ink placeholder:text-ink-soft/60 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:ring-offset-1 text-base"
+          />
+          <Button type="submit" variant="primary">Subscribe</Button>
+        </form>
+      </div>
+    </Container>
+  </Section>
+
 </Base>
