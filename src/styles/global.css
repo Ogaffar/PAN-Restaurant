@@ -39,6 +39,10 @@
 @utility max-w-prose {
   max-width: 65ch;
 }
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
 
 /* ---------- Layout constants ---------- */
 :root {

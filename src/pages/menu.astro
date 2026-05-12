@@ -1,0 +1,239 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Container from '../components/ui/Container.astro';
+import Eyebrow from '../components/ui/Eyebrow.astro';
+import Button from '../components/ui/Button.astro';
+import MenuItem from '../components/MenuItem.astro';
+
+const TOAST_URL = 'https://www.toasttab.com/pan-fayetteville';
+
+// ── Data ────────────────────────────────────────────────────────
+const allItems = await getCollection('menu');
+
+type GroupDef = {
+  id: string;
+  label: string;
+  categories: string[];
+  eyebrow: string | null;
+};
+
+const GROUP_DEFS: GroupDef[] = [
+  { id: 'specialty-sandwiches', label: 'Specialty Sandwiches', categories: ['specialty-sandwich'], eyebrow: null },
+  { id: 'paninis',              label: 'Paninis',              categories: ['panini'],             eyebrow: 'Hot, pressed on ciabatta' },
+  { id: 'soups',                label: 'Soups',                categories: ['soup'],               eyebrow: 'Made fresh every morning' },
+  { id: 'salads-and-sides',     label: 'Salads & Sides',       categories: ['salad', 'side'],      eyebrow: null },
+  { id: 'breakfast',            label: 'Breakfast',            categories: ['breakfast'],          eyebrow: 'Served until 11 am' },
+  { id: 'desserts',             label: 'Desserts',             categories: ['dessert'],            eyebrow: 'Baked in-house daily' },
+  { id: 'beverages',            label: 'Beverages',            categories: ['beverage'],           eyebrow: 'Made to order' },
+];
+
+const groups = GROUP_DEFS.map(def => ({
+  ...def,
+  items: allItems
+    .filter(item => def.categories.includes(item.data.category))
+    .sort((a, b) => a.data.order - b.data.order),
+})).filter(g => g.items.length > 0);
+
+// ── Schema.org JSON-LD ───────────────────────────────────────────
+const DIET_MAP: Record<string, string> = {
+  vegan:                'VeganDiet',
+  vegetarian:           'VegetarianDiet',
+  'gluten-free-option': 'GlutenFreeDiet',
+};
+
+const schemaData = {
+  '@context': 'https://schema.org',
+  '@type': 'Menu',
+  name: 'PAN Restaurant Menu',
+  description: 'Chef-driven sandwiches, paninis, soups, and sides. All made in-house at 105 Hay St, Fayetteville, NC.',
+  hasMenuSection: groups.map(g => ({
+    '@type': 'MenuSection',
+    name: g.label,
+    hasMenuItem: g.items.map(item => {
+      const entry: Record<string, unknown> = {
+        '@type': 'MenuItem',
+        name: item.data.name,
+        description: item.data.description,
+      };
+      if (item.data.price) {
+        entry.offers = {
+          '@type': 'Offer',
+          price: item.data.price.replace(/[^0-9.]/g, ''),
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+        };
+      }
+      const diets = (item.data.dietary ?? [])
+        .filter(d => d in DIET_MAP)
+        .map(d => `https://schema.org/${DIET_MAP[d]}`);
+      if (diets.length) entry.suitableForDiet = diets;
+      return entry;
+    }),
+  })),
+};
+
+const safeSchema = JSON.stringify(schemaData)
+  .replace(/</g, '\\u003c')
+  .replace(/>/g, '\\u003e')
+  .replace(/&/g, '\\u0026');
+---
+
+<Base
+  title="Menu | PAN — Downtown Fayetteville"
+  description="Chef-driven sandwiches, paninis, soups, and sides. The Leclair, Icarus, Sevvy, and more — all made in-house at 105 Hay St."
+>
+  <script type="application/ld+json" set:html={safeSchema} slot="head"></script>
+
+  <!-- ─── Compact hero ─────────────────────────────────────────── -->
+  <section class="bg-paper border-b border-sage-100 py-10 lg:py-12">
+    <Container>
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div>
+          <Eyebrow>Our food</Eyebrow>
+          <h1 class="mt-2 font-display text-5xl lg:text-6xl tracking-[-0.025em] text-ink leading-[1.05]">
+            The menu
+          </h1>
+          <p class="mt-3 text-lg text-ink-soft max-w-md leading-relaxed">
+            Everything&rsquo;s made in-house. Most of it&rsquo;s named after a friend.
+          </p>
+        </div>
+        <div class="shrink-0">
+          <Button href={TOAST_URL} variant="terracotta" size="lg" target="_blank" rel="noopener">
+            Order on Toast
+          </Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ─── Sticky category nav ──────────────────────────────────── -->
+  <nav
+    class="sticky top-[var(--header-height)] z-[90] bg-paper/95 backdrop-blur-sm border-b border-sage-100"
+    aria-label="Jump to menu category"
+  >
+    <Container>
+      <div class="flex gap-2 py-3 overflow-x-auto scrollbar-none">
+        {groups.map(g => (
+          <a
+            href={`#${g.id}`}
+            class="category-chip shrink-0 rounded-full border border-sage-200 text-sm font-medium px-4 py-1.5 text-ink-soft whitespace-nowrap transition-colors hover:bg-sage-50 hover:text-ink hover:border-sage-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+            aria-current="false"
+          >
+            {g.label}
+          </a>
+        ))}
+      </div>
+    </Container>
+  </nav>
+
+  <!-- ─── Category sections ────────────────────────────────────── -->
+  <div>
+    {groups.map(g => (
+      <section
+        class="menu-category-section py-14 lg:py-20 border-b border-sage-50 last:border-0"
+        data-section-id={g.id}
+      >
+        <Container>
+          {g.eyebrow && <Eyebrow class="mb-2">{g.eyebrow}</Eyebrow>}
+          <h2
+            id={g.id}
+            tabindex="-1"
+            class="font-display text-4xl lg:text-[2.75rem] tracking-[-0.02em] text-ink outline-none scroll-mt-[144px]"
+          >
+            {g.label}
+          </h2>
+
+          <div class="mt-10 grid md:grid-cols-2 gap-x-10 lg:gap-x-14">
+            {g.items.map(item => (
+              <MenuItem
+                name={item.data.name}
+                description={item.data.description}
+                ingredients={item.data.ingredients}
+                price={item.data.price}
+                sizes={item.data.sizes}
+                dietary={item.data.dietary}
+                image={item.data.image}
+                imageAlt={item.data.imageAlt}
+                availability={item.data.availability}
+              />
+            ))}
+          </div>
+        </Container>
+      </section>
+    ))}
+  </div>
+
+  <!-- ─── End CTA ──────────────────────────────────────────────── -->
+  <section class="bg-sage-500 py-16 lg:py-20 text-center" aria-label="Order online">
+    <a
+      href={TOAST_URL}
+      target="_blank"
+      rel="noopener"
+      class="font-display text-3xl lg:text-4xl text-paper hover:text-sage-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper focus-visible:ring-offset-4 focus-visible:ring-offset-sage-500 rounded-sm"
+    >
+      Hungry now? Order on Toast &rarr;
+    </a>
+  </section>
+
+  <!-- ─── Footer note ──────────────────────────────────────────── -->
+  <p class="text-center text-sm text-ink-soft py-8 px-6 border-t border-sage-50">
+    Menu rotates seasonally. Prices and availability are subject to change.
+    Call <a href="tel:+19104913105" class="hover:text-ink transition-colors">(910) 491-3105</a> to confirm.
+  </p>
+
+</Base>
+
+<script>
+  // Active chip: highlight the chip matching the section currently in view
+  const chips = document.querySelectorAll<HTMLAnchorElement>('.category-chip');
+  const sections = document.querySelectorAll<HTMLElement>('[data-section-id]');
+
+  if (chips.length && 'IntersectionObserver' in window) {
+    // Track the last section that entered the active zone so scrolling up works
+    const activeMap = new Map<string, boolean>();
+
+    const observer = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          const id = (entry.target as HTMLElement).dataset.sectionId ?? '';
+          activeMap.set(id, entry.isIntersecting);
+        }
+        // Find topmost active section (matches scroll-down and scroll-up)
+        let found = false;
+        for (const section of sections) {
+          const id = section.dataset.sectionId ?? '';
+          if (activeMap.get(id)) {
+            chips.forEach(chip => {
+              const active = chip.getAttribute('href') === `#${id}`;
+              chip.setAttribute('aria-current', active ? 'true' : 'false');
+              chip.classList.toggle('chip-active', active);
+            });
+            // Scroll active chip into view in the nav
+            if (!found) {
+              const activeChip = document.querySelector<HTMLAnchorElement>(
+                `.category-chip[href="#${id}"]`
+              );
+              activeChip?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+            }
+            found = true;
+            break;
+          }
+        }
+      },
+      { rootMargin: '-144px 0px -50% 0px', threshold: 0 }
+    );
+
+    sections.forEach(s => observer.observe(s));
+  }
+</script>
+
+<style>
+  /* Active chip state — driven by aria-current via JS */
+  .category-chip[aria-current='true'],
+  .category-chip.chip-active {
+    background-color: var(--color-sage-500);
+    color: var(--color-paper);
+    border-color: var(--color-sage-500);
+  }
+</style>
