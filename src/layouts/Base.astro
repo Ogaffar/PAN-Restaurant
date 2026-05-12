@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import frauncesFontUrl from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url';
 import interFontUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
@@ -15,7 +17,8 @@ const {
   ogImage,
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://panfayetteville.com');
+const ogImageURL   = ogImage ?? `${Astro.site ?? 'https://panfayetteville.com'}/og-default.jpg`;
 ---
 
 <!doctype html>
@@ -24,30 +27,60 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#FAF7F0" />
 
-    <!-- Font preloads — prevents layout shift on display & body fonts -->
+    <!-- Font preloads — prevents FOUT on display & body fonts -->
     <link rel="preload" href={frauncesFontUrl} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={interFontUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interFontUrl}    as="font" type="font/woff2" crossorigin />
 
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph -->
-    <meta property="og:title" content={title} />
+    <meta property="og:site_name"   content="Pan Restaurant" />
+    <meta property="og:title"       content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:type" content="website" />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:url"         content={canonicalURL} />
+    <meta property="og:type"        content="website" />
+    <meta property="og:image"       content={ogImageURL} />
+    <meta property="og:locale"      content="en_US" />
 
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <!-- Twitter / X card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image"       content={ogImageURL} />
+
+    <!-- Favicons (owner will supply final assets) -->
+    <link rel="icon"             type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon"             type="image/x-icon"  href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon"                      href="/apple-touch-icon.png" />
+
+    <!-- Plausible analytics — production only -->
+    {import.meta.env.PROD && (
+      <script
+        is:inline
+        defer
+        data-domain="panfayetteville.com"
+        src="https://plausible.io/js/script.js"
+      ></script>
+    )}
 
     <slot name="head" />
   </head>
   <body>
-    <slot />
-    <slot name="footer" />
+    <!-- Skip link: first focusable element -->
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <Header />
+
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <slot name="after-footer" />
   </body>
 </html>

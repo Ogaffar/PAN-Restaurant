@@ -3,9 +3,9 @@ import Base from '../layouts/Base.astro';
 ---
 
 <Base title="Pan — coming soon.">
-  <main
+  <div
     style="
-      min-height: 100svh;
+      min-height: calc(100svh - var(--header-height));
       display: grid;
       place-items: center;
       font-family: var(--font-display);
@@ -15,5 +15,5 @@ import Base from '../layouts/Base.astro';
     "
   >
     Pan &mdash; coming soon.
-  </main>
+  </div>
 </Base>

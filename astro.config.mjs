@@ -15,6 +15,7 @@ export default defineConfig({
       include: {
         mdi: ['*'],
         lucide: ['*'],
+        'simple-icons': ['instagram', 'facebook'],
       },
     }),
   ],

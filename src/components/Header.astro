@@ -1,0 +1,239 @@
+---
+const { pathname } = Astro.url;
+
+const navLinks = [
+  { href: '/menu',     label: 'Menu' },
+  { href: '/story',    label: 'Story' },
+  { href: '/visit',    label: 'Visit' },
+  { href: '/catering', label: 'Catering' },
+  { href: '/press',    label: 'Press' },
+] as const;
+
+function isActive(href: string): boolean {
+  if (href === '/') return pathname === '/';
+  return pathname === href || pathname.startsWith(href + '/');
+}
+
+const TOAST_URL = 'https://www.toasttab.com/pan-fayetteville';
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-[100] h-16 lg:h-[72px] border-b border-transparent transition-[border-color,background-color] duration-200"
+>
+  <!--
+    Checkbox is the first DOM child so it precedes both the inner bar
+    and the mobile overlay — required for Tailwind peer-checked to work.
+  -->
+  <input
+    type="checkbox"
+    id="nav-toggle"
+    class="peer sr-only"
+    aria-hidden="true"
+    tabindex="-1"
+  />
+
+  <!-- Inner bar -->
+  <div class="h-full flex items-center justify-between gap-6 px-6 lg:px-10 max-w-content mx-auto">
+
+    <!-- Wordmark -->
+    <a
+      href="/"
+      aria-label="PAN home"
+      class="font-display font-semibold text-2xl leading-none tracking-tight text-ink shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700 focus-visible:ring-offset-2 rounded-sm"
+    >
+      pan
+    </a>
+
+    <!-- Desktop nav -->
+    <nav aria-label="Primary" class="hidden lg:flex items-center gap-7">
+      {navLinks.map(({ href, label }) => (
+        <a
+          href={href}
+          aria-current={isActive(href) ? 'page' : undefined}
+          class:list={[
+            'nav-link text-sm font-medium transition-colors duration-150',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700 focus-visible:ring-offset-2 rounded-sm',
+            isActive(href) ? 'text-ink is-active' : 'text-ink-soft hover:text-ink',
+          ]}
+        >
+          {label}
+        </a>
+      ))}
+
+      <a
+        href={TOAST_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium font-body bg-sage-500 text-paper rounded-sm hover:bg-sage-700 active:bg-sage-900 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700 focus-visible:ring-offset-2"
+      >
+        Order Online
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </nav>
+
+    <!-- Hamburger toggle label (mobile only) -->
+    <label
+      for="nav-toggle"
+      id="nav-toggle-label"
+      aria-label="Open navigation"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      class="hamburger-btn relative z-10 lg:hidden flex flex-col justify-center gap-[5px] w-10 h-10 -mr-2 cursor-pointer rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700"
+      tabindex="0"
+    >
+      <span class="ham-bar ham-top  block h-[2px] w-[22px] mx-auto bg-ink origin-center transition-transform duration-200"></span>
+      <span class="ham-bar ham-mid  block h-[2px] w-[22px] mx-auto bg-ink transition-opacity duration-200"></span>
+      <span class="ham-bar ham-bot  block h-[2px] w-[22px] mx-auto bg-ink origin-center transition-transform duration-200"></span>
+      <span class="sr-only">Toggle navigation</span>
+    </label>
+
+  </div><!-- /inner bar -->
+
+  <!-- Mobile overlay — peer sibling to #nav-toggle -->
+  <div
+    id="mobile-nav"
+    class="mobile-nav fixed inset-0 top-0 bg-paper flex-col px-6 pt-24 pb-10 overflow-y-auto lg:hidden"
+    role="dialog"
+    aria-label="Navigation menu"
+    aria-modal="true"
+  >
+    <nav aria-label="Primary">
+      <ul class="flex flex-col gap-1">
+        {navLinks.map(({ href, label }) => (
+          <li>
+            <a
+              href={href}
+              aria-current={isActive(href) ? 'page' : undefined}
+              class:list={[
+                'block py-3 font-display text-3xl tracking-tight transition-colors duration-150',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700 rounded-sm',
+                isActive(href) ? 'text-ink' : 'text-ink-soft hover:text-ink',
+              ]}
+            >
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="mt-10">
+      <a
+        href={TOAST_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center w-full py-4 font-body font-medium text-base bg-sage-500 text-paper rounded-sm hover:bg-sage-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700 focus-visible:ring-offset-2"
+      >
+        Order Online
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </div>
+  </div><!-- /mobile-nav -->
+</header>
+
+<!-- Body scroll lock + show/hide overlay via :has() -->
+<style is:global>
+  body:has(#nav-toggle:checked) {
+    overflow: hidden;
+  }
+
+  /* Scrolled state — class toggled by IntersectionObserver script */
+  #site-header.scrolled {
+    background-color: color-mix(in srgb, var(--color-paper) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: var(--color-sage-100);
+  }
+
+  /* Hamburger → X animation via :has() */
+  body:has(#nav-toggle:checked) .ham-top {
+    transform: translateY(7px) rotate(45deg);
+  }
+  body:has(#nav-toggle:checked) .ham-mid {
+    opacity: 0;
+  }
+  body:has(#nav-toggle:checked) .ham-bot {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+</style>
+
+<style>
+  /* Mobile nav: hidden by default, flex when checkbox checked */
+  .mobile-nav {
+    display: none;
+  }
+  /* :global needed because the :has() target is body, outside component scope */
+  :global(body:has(#nav-toggle:checked)) .mobile-nav {
+    display: flex;
+  }
+
+  /* Active nav link — sage underline indicator */
+  .nav-link.is-active {
+    position: relative;
+  }
+  .nav-link.is-active::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--color-sage-500);
+    border-radius: 1px;
+  }
+
+  /* Keyboard-accessible hamburger label (label isn't inherently focusable) */
+  .hamburger-btn:focus-visible {
+    outline: 2px solid var(--color-sage-700);
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+  // Scroll → scrolled class
+  const header = document.getElementById('site-header');
+  const onScroll = () => header?.classList.toggle('scrolled', window.scrollY > 4);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll(); // set initial state
+
+  // Sync aria-expanded on the label when checkbox changes
+  const toggle = document.getElementById('nav-toggle') as HTMLInputElement | null;
+  const label  = document.getElementById('nav-toggle-label');
+
+  const syncAria = () => {
+    const open = toggle?.checked ?? false;
+    label?.setAttribute('aria-expanded', String(open));
+    label?.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+  };
+
+  toggle?.addEventListener('change', syncAria);
+
+  // Allow Enter/Space on the label (it's a <label> with tabindex=0)
+  label?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (toggle) {
+        toggle.checked = !toggle.checked;
+        syncAria();
+      }
+    }
+  });
+
+  // Escape closes the menu
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toggle?.checked) {
+      toggle.checked = false;
+      syncAria();
+      label?.focus();
+    }
+  });
+
+  // Close menu and uncheck when nav link is clicked (route change)
+  document.getElementById('mobile-nav')?.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      if (toggle) toggle.checked = false;
+      syncAria();
+    });
+  });
+</script>

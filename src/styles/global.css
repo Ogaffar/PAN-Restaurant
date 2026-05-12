@@ -40,10 +40,48 @@
   max-width: 65ch;
 }
 
+/* ---------- Layout constants ---------- */
+:root {
+  --header-height: 64px;
+}
+@media (min-width: 1024px) {
+  :root {
+    --header-height: 72px;
+  }
+}
+
 /* ---------- Base ---------- */
 html {
   color-scheme: light;
   font-optical-sizing: auto;
+  scroll-padding-top: var(--header-height);
+}
+
+/* Skip-to-main link */
+.skip-link {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 9999;
+  padding: 0.5rem 1.25rem;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  overflow: hidden;
+}
+.skip-link:focus-visible {
+  clip: auto;
+  clip-path: none;
+  overflow: visible;
+  outline: 2px solid var(--color-sage-300);
+  outline-offset: 2px;
 }
 
 *,

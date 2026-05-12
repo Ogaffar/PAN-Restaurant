@@ -1,0 +1,170 @@
+---
+import { Icon } from 'astro-icon/components';
+
+const currentYear = new Date().getFullYear();
+
+const MAPS_URL =
+  'https://maps.google.com/?q=Pan+Restaurant+Fayetteville+AR';
+const PHONE     = '(479) 966-4455';
+const PHONE_TEL = 'tel:+14799664455';
+const IG_URL    = 'https://www.instagram.com/panfayetteville/';
+const FB_URL    = 'https://www.facebook.com/panfayetteville/';
+
+const hours = [
+  { days: 'Monday',         time: 'Closed' },
+  { days: 'Tuesday–Thursday', time: '5 – 10 pm' },
+  { days: 'Friday–Saturday',  time: '5 – 11 pm' },
+  { days: 'Sunday',           time: '5 – 9 pm' },
+] as const;
+---
+
+<footer class="bg-ink text-paper">
+
+  <!-- Main columns -->
+  <div class="max-w-content mx-auto px-6 lg:px-10 pt-16 pb-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
+
+      <!-- Col 1: Brand -->
+      <div class="flex flex-col gap-5">
+        <a
+          href="/"
+          aria-label="PAN home"
+          class="font-display font-semibold text-3xl tracking-tight text-paper w-fit focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-300 focus-visible:ring-offset-2 focus-visible:ring-offset-ink rounded-sm"
+        >
+          pan
+        </a>
+        <p class="font-body text-sm leading-relaxed text-paper/70 max-w-[22ch] italic">
+          &ldquo;Life, Liberty, and the Prosciutt&rsquo; of happiness.&rdquo;
+        </p>
+
+        <!-- Best of Fayetteville badge -->
+        <div
+          class="inline-flex items-center gap-2 w-fit px-3 py-1.5 rounded-full border border-mustard/40 text-mustard"
+          aria-label="Best of Fayetteville 2024 and 2025"
+        >
+          <Icon name="lucide:star" class="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+          <span class="font-body text-xs font-medium tracking-wide">
+            Best of Fayetteville &rsquo;24 &amp; &rsquo;25
+          </span>
+        </div>
+      </div>
+
+      <!-- Col 2: Visit -->
+      <div class="flex flex-col gap-5">
+        <h2 class="font-display text-lg tracking-tight text-paper">Visit</h2>
+
+        <address class="not-italic flex flex-col gap-3 font-body text-sm text-paper/70">
+          <a
+            href={MAPS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-paper transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-300 rounded-sm"
+          >
+            601 N College Ave, Suite 1<br />
+            Fayetteville, AR 72701
+          </a>
+          <a
+            href={PHONE_TEL}
+            class="hover:text-paper transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-300 rounded-sm w-fit"
+          >
+            {PHONE}
+          </a>
+        </address>
+
+        <!-- Hours -->
+        <table class="text-sm w-full">
+          <caption class="sr-only">Restaurant hours</caption>
+          <tbody>
+            {hours.map(({ days, time }) => (
+              <tr class="border-b border-paper/10 last:border-0">
+                <td class="py-2 pr-4 font-medium text-paper/60 whitespace-nowrap">{days}</td>
+                <td class="py-2 text-paper/90">{time}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Col 3: Follow + Subscribe -->
+      <div class="flex flex-col gap-5">
+        <h2 class="font-display text-lg tracking-tight text-paper">Follow</h2>
+
+        <div class="flex items-center gap-4">
+          <a
+            href={IG_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="PAN on Instagram (opens in new tab)"
+            class="text-paper/60 hover:text-paper transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-300 focus-visible:ring-offset-1 focus-visible:ring-offset-ink rounded-sm p-1 -ml-1"
+          >
+            <Icon name="simple-icons:instagram" class="w-5 h-5" aria-hidden="true" />
+          </a>
+          <a
+            href={FB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="PAN on Facebook (opens in new tab)"
+            class="text-paper/60 hover:text-paper transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-300 focus-visible:ring-offset-1 focus-visible:ring-offset-ink rounded-sm p-1"
+          >
+            <Icon name="simple-icons:facebook" class="w-5 h-5" aria-hidden="true" />
+          </a>
+        </div>
+
+        <!-- Email subscribe -->
+        <div class="mt-2">
+          <p class="font-body text-sm font-medium text-paper/80 mb-3">
+            Stay in the loop
+          </p>
+          <form
+            action="/api/subscribe"
+            method="post"
+            aria-label="Email newsletter signup"
+            class="flex flex-col sm:flex-row gap-2"
+          >
+            <label for="footer-email" class="sr-only">Email address</label>
+            <input
+              type="email"
+              id="footer-email"
+              name="email"
+              placeholder="your@email.com"
+              required
+              autocomplete="email"
+              class="flex-1 min-w-0 px-3 py-2.5 rounded-sm bg-paper/10 border border-paper/20 text-paper placeholder:text-paper/40 font-body text-sm focus:outline-none focus:ring-2 focus:ring-sage-300 focus:border-transparent transition-colors"
+            />
+            <button
+              type="submit"
+              class="shrink-0 px-4 py-2.5 bg-sage-500 text-paper font-body text-sm font-medium rounded-sm hover:bg-sage-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-300 focus-visible:ring-offset-2 focus-visible:ring-offset-ink whitespace-nowrap"
+            >
+              Subscribe
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+  </div>
+
+  <!-- Bottom strip -->
+  <div class="border-t border-paper/10">
+    <div class="max-w-content mx-auto px-6 lg:px-10 py-5 flex flex-col sm:flex-row justify-between items-center gap-3">
+      <p class="font-body text-xs text-paper/50">
+        &copy; {currentYear} Graybill Hospitality Co. LLC. All rights reserved.
+      </p>
+      <nav aria-label="Footer" class="flex items-center gap-5">
+        <a
+          href="/privacy"
+          class="font-body text-xs text-paper/50 hover:text-paper/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-300 rounded-sm"
+        >
+          Privacy
+        </a>
+        <a
+          href="/accessibility"
+          class="font-body text-xs text-paper/50 hover:text-paper/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-300 rounded-sm"
+        >
+          Accessibility
+        </a>
+      </nav>
+    </div>
+  </div>
+
+</footer>
