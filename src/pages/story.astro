@@ -1,0 +1,319 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Section from '../components/ui/Section.astro';
+import Container from '../components/ui/Container.astro';
+import Eyebrow from '../components/ui/Eyebrow.astro';
+import Heading from '../components/ui/Heading.astro';
+
+// TODO(owner): replace with final portrait photography
+import brianSrc from '../assets/images/story-brian.jpg';
+// TODO(owner): replace with final portrait photography
+import staciSrc from '../assets/images/story-staci.jpg';
+
+const brianPreload = await getImage({ src: brianSrc, width: 600, height: 750, format: 'webp' });
+---
+
+<Base
+  title="Our Story | PAN — Downtown Fayetteville"
+  description="How a military veteran, a theater co-owner, and a tiny green dining room became Fayetteville's favorite sandwich shop. The story of Brian and Staci Graybill and PAN."
+>
+  <link slot="head" rel="preload" as="image" href={brianPreload.src} type="image/webp" fetchpriority="high" />
+
+  <!-- ─── 1. HERO ─────────────────────────────────────────────── -->
+  <section aria-label="Story hero" class="bg-paper overflow-hidden border-b border-sage-100">
+    <div class="grid lg:grid-cols-2 lg:min-h-[80vh]">
+
+      <!-- Portrait: first in DOM (top on mobile), right on desktop -->
+      <div class="relative h-[56vw] max-h-[420px] lg:h-auto lg:max-h-none lg:order-2">
+        <Image
+          src={brianSrc}
+          alt="Brian Graybill, co-founder of PAN"
+          width={600}
+          height={750}
+          format="webp"
+          loading="eager"
+          fetchpriority="high"
+          class="absolute inset-0 w-full h-full object-cover object-top"
+        />
+        {/* TODO(owner): replace with final portrait of Brian Graybill */}
+      </div>
+
+      <!-- Text content -->
+      <div class="lg:order-1 flex flex-col justify-center px-6 py-12 lg:px-12 xl:px-16 lg:py-16">
+        <div class="max-w-prose">
+          <Eyebrow>Our story</Eyebrow>
+          <h1 class="mt-3 font-display text-[clamp(2.25rem,5vw,4.5rem)] leading-[1.05] tracking-[-0.025em] text-ink">
+            Named for the satyr.<br />Made for the city.
+          </h1>
+          <p class="mt-5 text-xl text-ink-soft leading-relaxed">
+            How a chef, a wife, and a tiny green dining room became Fayetteville&rsquo;s favorite sandwich shop.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── 2. THE NAME ──────────────────────────────────────────── -->
+  <Section tone="paper">
+    <Container>
+      <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+        <!-- Satyr illustration -->
+        <div class="flex justify-center md:justify-start">
+          <div class="w-48 lg:w-64 text-sage-500" aria-hidden="true">
+            <!--
+              TODO(owner): replace this placeholder SVG with final
+              satyr / Pan illustration from brand designer.
+            -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 240" fill="none"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Horns -->
+              <path d="M66 32 C62 22 54 14 48 8" />
+              <path d="M94 32 C98 22 106 14 112 8" />
+              <!-- Head -->
+              <circle cx="80" cy="50" r="24" />
+              <!-- Torso -->
+              <path d="M62 74 C56 88 56 108 60 126 L80 130 L100 126 C104 108 104 88 98 74 Z" />
+              <!-- Left arm -->
+              <path d="M62 88 C52 94 44 100 38 108" />
+              <!-- Right arm -->
+              <path d="M98 88 C108 88 116 86 122 84" />
+              <!-- Pan flute — 4 pipes, joiner bar -->
+              <path d="M120 82 L140 86" />
+              <line x1="122" y1="82" x2="120" y2="112" />
+              <line x1="128" y1="83" x2="126" y2="117" />
+              <line x1="134" y1="84" x2="132" y2="121" />
+              <line x1="140" y1="86" x2="138" y2="126" />
+              <!-- Left goat leg -->
+              <path d="M68 126 C64 142 60 158 54 172 C50 182 46 194 44 208" />
+              <!-- Left hoof -->
+              <path d="M38 206 C40 216 48 218 54 214 L56 208" />
+              <!-- Right goat leg -->
+              <path d="M92 126 C96 142 100 158 106 172 C110 182 114 194 116 208" />
+              <!-- Right hoof -->
+              <path d="M110 206 C112 216 120 218 126 214 L128 208" />
+              <!-- Tail -->
+              <path d="M100 118 C110 112 114 116 112 124" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Text -->
+        <div>
+          <Eyebrow>The name</Eyebrow>
+          <Heading level={2} class="mt-3">Two meanings. One restaurant.</Heading>
+          <div class="mt-6 space-y-5">
+            <p class="text-ink-soft leading-relaxed max-w-prose">
+              In Italian, <em>pane</em> means bread &mdash; the foundation of any meal, the
+              thing a sandwich shop is literally built on. Brian Graybill named his restaurant
+              for the material it&rsquo;s made of.
+            </p>
+            <p class="text-ink-soft leading-relaxed max-w-prose">
+              But the name reaches further. Pan is also the Greek god of wild places, music,
+              and shepherds &mdash; half man, half goat, usually pictured with a set of pipes,
+              wandering through the hills. There&rsquo;s something of that restless, pastoral
+              spirit in a restaurant that refuses to serve ordinary food.
+            </p>
+            <p class="text-ink-soft leading-relaxed max-w-prose">
+              Both meanings fit a sandwich shop run by a chef who wants Fayetteville to fall
+              back in love with food.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 3. THE FOUNDERS ──────────────────────────────────────── -->
+  <Section tone="paper" class="border-t border-sage-50">
+    <Container>
+      <Eyebrow>The founders</Eyebrow>
+      <Heading level={2} class="mt-3">Brian &amp; Staci Graybill</Heading>
+
+      <div class="mt-12 grid md:grid-cols-2 gap-10 lg:gap-14">
+
+        <!-- Brian -->
+        <div>
+          <div class="relative aspect-[4/5] overflow-hidden rounded-sm bg-sage-50">
+            <Image
+              src={brianSrc}
+              alt="Brian Graybill, co-founder of PAN"
+              width={480}
+              height={600}
+              class="absolute inset-0 w-full h-full object-cover object-top"
+              loading="lazy"
+            />
+            {/* TODO(owner): replace with final photo of Brian Graybill */}
+          </div>
+          <div class="mt-6">
+            <h3 class="font-display text-2xl text-ink">Brian Graybill</h3>
+            <p class="mt-1 text-sm font-medium text-sage-500">Co-founder &amp; Chef</p>
+            <p class="mt-4 text-ink-soft leading-relaxed max-w-prose">
+              A US military veteran, Brian spent nine years in the kitchen at Pierro&rsquo;s
+              Italian Bistro before founding Graybill Hospitality Co. in 2018. He opened
+              Napkins &mdash; his first concept &mdash; at Dirtbag Ales in Hope Mills, then
+              brought PAN to downtown Fayetteville in 2022.
+            </p>
+            <blockquote class="mt-6 border-l-2 border-sage-300 pl-5">
+              <p class="font-display italic text-xl text-ink leading-relaxed">
+                &ldquo;I want to raise the bar on the food scene here in Fayetteville and
+                elevate the food and beverage culture.&rdquo;
+              </p>
+              <footer class="mt-3 text-sm text-ink-soft not-italic">
+                &mdash; Brian Graybill, <cite>Up &amp; Coming Weekly</cite>
+              </footer>
+            </blockquote>
+          </div>
+        </div>
+
+        <!-- Staci -->
+        <div>
+          <div class="relative aspect-[4/5] overflow-hidden rounded-sm bg-sage-50">
+            <Image
+              src={staciSrc}
+              alt="Staci Graybill, co-founder of PAN"
+              width={480}
+              height={600}
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+            {/* TODO(owner): replace with final photo of Staci Graybill */}
+          </div>
+          <div class="mt-6">
+            <h3 class="font-display text-2xl text-ink">Staci Graybill</h3>
+            <p class="mt-1 text-sm font-medium text-sage-500">Co-founder &amp; Operations</p>
+            <p class="mt-4 text-ink-soft leading-relaxed max-w-prose">
+              With a theater background, Staci is the operations and design eye behind every
+              Graybill concept. She brings the same attention to atmosphere and detail to the
+              restaurant floor that she brought to the stage &mdash; the kind of care you feel
+              the moment you walk in.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 4. THE SOURCING ──────────────────────────────────────── -->
+  <Section tone="cream">
+    <Container>
+      <Eyebrow>Sourcing</Eyebrow>
+      <Heading level={2} class="mt-3">Locally sourced.<br class="sm:hidden" /> Painfully on purpose.</Heading>
+      <p class="mt-5 text-lg text-ink-soft leading-relaxed max-w-prose">
+        The ingredients in a PAN sandwich don&rsquo;t come from a broadline distributor.
+        They come from people we know, within driving distance, who care as much as we do.
+      </p>
+
+      <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+        <!-- San Giuseppe Salami Co. -->
+        <div class="bg-paper rounded-sm border border-sage-100 p-6">
+          <p class="text-xs font-medium text-ink-soft/70 tracking-widest uppercase">Elon, NC</p>
+          <h3 class="mt-2 font-display text-xl text-ink">San Giuseppe Salami Co.</h3>
+          <p class="mt-3 text-sm text-ink-soft leading-relaxed">
+            The cured meats that make the Giuseppe. Hand-crafted salumi from a small North
+            Carolina producer who takes the Italian tradition seriously.
+          </p>
+          {/* TODO(owner): add supplier URL when available */}
+        </div>
+
+        <!-- Superior Bakery -->
+        <div class="bg-paper rounded-sm border border-sage-100 p-6">
+          <p class="text-xs font-medium text-ink-soft/70 tracking-widest uppercase">Fayetteville, NC</p>
+          <h3 class="mt-2 font-display text-xl text-ink">Superior Bakery</h3>
+          <p class="mt-3 text-sm text-ink-soft leading-relaxed">
+            Bread baked four blocks away. Superior supplies the loaves that every PAN sandwich
+            is built on &mdash; fresh, daily, local.
+          </p>
+          {/* TODO(owner): add supplier URL when available */}
+        </div>
+
+        <!-- Bead & Sugar -->
+        <div class="bg-paper rounded-sm border border-sage-100 p-6 sm:col-span-2 lg:col-span-1">
+          <p class="text-xs font-medium text-ink-soft/70 tracking-widest uppercase">Fayetteville, NC</p>
+          <h3 class="mt-2 font-display text-xl text-ink">Bead &amp; Sugar</h3>
+          <p class="mt-3 text-sm text-ink-soft leading-relaxed">
+            The pastry on your plate. The whoopie pie, the muffins, the coffee cake &mdash;
+            Bead &amp; Sugar handles the sweet end of the menu.
+          </p>
+          {/* TODO(owner): add supplier URL when available */}
+        </div>
+
+      </div>
+
+      <p class="mt-12 text-lg text-ink-soft leading-relaxed max-w-prose">
+        Every sandwich is named after someone who helped make PAN a reality.
+      </p>
+    </Container>
+  </Section>
+
+  <!-- ─── 5. THE FAMILY ────────────────────────────────────────── -->
+  <Section tone="paper">
+    <Container>
+      <Eyebrow>The family</Eyebrow>
+      <Heading level={2} class="mt-3">Graybill Hospitality</Heading>
+      <p class="mt-5 text-xl text-ink-soft leading-relaxed max-w-prose">
+        One family. Three concepts. One mission: make Fayetteville a food town.
+      </p>
+
+      <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <!-- Napkins -->
+        <div class="border-l-2 border-sage-300 pl-6">
+          <p class="text-xs font-medium text-ink-soft/70 tracking-widest uppercase">Hope Mills &middot; At Dirtbag Ales</p>
+          <h3 class="mt-2 font-display text-2xl text-ink">Napkins</h3>
+          <p class="mt-3 text-sm text-ink-soft leading-relaxed max-w-prose">
+            The first Graybill concept, anchored inside Dirtbag Ales in Hope Mills.
+            The place where the mission started.
+          </p>
+        </div>
+
+        <!-- PAN -->
+        <div class="border-l-2 border-terracotta pl-6">
+          <p class="text-xs font-medium text-ink-soft/70 tracking-widest uppercase">Downtown Fayetteville &middot; Since 2022</p>
+          <h3 class="mt-2 font-display text-2xl text-ink">PAN</h3>
+          <p class="mt-3 text-sm text-ink-soft leading-relaxed max-w-prose">
+            Chef-driven sandwiches at 105 Hay St. The celery-green dining room, the whoopie
+            pie, the sandwich named after a friend.
+          </p>
+        </div>
+
+        <!-- Market Square Pantry -->
+        <div class="border-l-2 border-mustard pl-6 sm:col-span-2 lg:col-span-1">
+          <p class="text-xs font-medium text-ink-soft/70 tracking-widest uppercase">23 Market Square &middot; Opened Dec 2025</p>
+          <h3 class="mt-2 font-display text-2xl text-ink">Market Square Pantry</h3>
+          <p class="mt-3 text-sm text-ink-soft leading-relaxed max-w-prose">
+            The newest addition to the Graybill family, opened December 2025 at 23 Market
+            Square. The pantry concept for downtown Fayetteville.
+          </p>
+        </div>
+
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 6. CLOSING CTA ───────────────────────────────────────── -->
+  <Section tone="sage" size="lg">
+    <Container>
+      <div class="text-center">
+        <Heading level={2} class="text-paper">Come visit.</Heading>
+        <p class="mt-5 text-xl text-sage-100 leading-relaxed">
+          105 Hay St &middot; Downtown Fayetteville &middot; Open Mon&ndash;Sat
+        </p>
+        <div class="mt-8">
+          <a
+            href="/#visit"
+            class="inline-flex items-center gap-1 font-body text-lg text-paper underline decoration-sage-300 underline-offset-4 hover:decoration-paper transition-[text-decoration-color] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper focus-visible:ring-offset-4 focus-visible:ring-offset-sage-500 rounded-sm"
+          >
+            See hours &amp; address &rarr;
+          </a>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+</Base>
