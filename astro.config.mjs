@@ -10,6 +10,10 @@ export default defineConfig({
   site: 'https://panfayetteville.com',
   adapter: cloudflare(),
 
+  build: {
+    inlineStylesheets: 'auto',
+  },
+
   integrations: [
     sitemap({
       // /catering is server-rendered (prerender=false) so it won't be auto-discovered
@@ -23,8 +27,7 @@ export default defineConfig({
     mdx(),
     icon({
       include: {
-        mdi: ['*'],
-        lucide: ['*'],
+        lucide: ['star', 'utensils'],
         'simple-icons': ['instagram', 'facebook'],
       },
     }),

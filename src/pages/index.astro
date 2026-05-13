@@ -1,5 +1,5 @@
 ---
-import { Image, getImage } from 'astro:assets';
+import { Image, Picture, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Section from '../components/ui/Section.astro';
 import Container from '../components/ui/Container.astro';
@@ -18,7 +18,10 @@ import interiorSrc from '../assets/images/interior.jpg';
 
 const TOAST_URL = 'https://www.toasttab.com/pan-fayetteville';
 
-const heroPreload = await getImage({ src: heroSrc, width: 1200, height: 1500, format: 'webp' });
+const [heroAvif480, heroAvif1200] = await Promise.all([
+  getImage({ src: heroSrc, width: 480, height: 600, format: 'avif' }),
+  getImage({ src: heroSrc, width: 1200, height: 1500, format: 'avif' }),
+]);
 const featured = await getFeaturedMenu();
 const todayLine = getTodayHours();
 const todayIndex = getTodayIndex();
@@ -28,7 +31,14 @@ const todayIndex = getTodayIndex();
   title="PAN — Gorgeous sandwiches in Downtown Fayetteville"
   description="Best Sandwich Shop in Fayetteville two years running. Chef-driven sandwiches on house-baked bread with locally sourced ingredients. The Leclair, the Giuseppe, the Sevvy — at 105 Hay St."
 >
-  <link slot="head" rel="preload" as="image" href={heroPreload.src} type="image/webp" fetchpriority="high" />
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    imagesrcset={`${heroAvif480.src} 480w, ${heroAvif1200.src} 1200w`}
+    imagesizes="(min-width: 1024px) 50vw, 100vw"
+    fetchpriority="high"
+  />
 
   <!-- ─── 1. HERO ─────────────────────────────────────────────── -->
   <section aria-label="Welcome to PAN" class="bg-paper overflow-hidden">
@@ -36,15 +46,19 @@ const todayIndex = getTodayIndex();
 
       <!-- Image: first in DOM (top on mobile, right column on desktop) -->
       <div class="relative h-[50svh] max-h-[50svh] lg:h-auto lg:max-h-none lg:order-2">
-        <Image
+        <Picture
           src={heroSrc}
           alt="The Leclair — prosciutto, brie, fig jam, and arugula on toasted sourdough"
+          formats={['avif', 'webp']}
+          fallbackFormat="jpeg"
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 50vw, 100vw"
           width={1200}
           height={1500}
-          format="webp"
           loading="eager"
           fetchpriority="high"
-          class="absolute inset-0 w-full h-full object-cover"
+          class="w-full h-full object-cover"
+          pictureAttributes={{ class: "absolute inset-0 block" }}
         />
       </div>
 

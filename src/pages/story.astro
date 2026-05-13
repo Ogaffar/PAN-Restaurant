@@ -1,5 +1,5 @@
 ---
-import { Image, getImage } from 'astro:assets';
+import { Image, Picture, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Section from '../components/ui/Section.astro';
 import Container from '../components/ui/Container.astro';
@@ -11,14 +11,14 @@ import brianSrc from '../assets/images/story-brian.jpg';
 // TODO(owner): replace with final portrait photography
 import staciSrc from '../assets/images/story-staci.jpg';
 
-const brianPreload = await getImage({ src: brianSrc, width: 600, height: 750, format: 'webp' });
+const brianPreload = await getImage({ src: brianSrc, width: 600, height: 750, format: 'avif' });
 ---
 
 <Base
   title="Our Story | PAN — Downtown Fayetteville"
   description="Brian and Staci Graybill founded PAN on one conviction: Fayetteville deserves chef-driven food built on craft, not convenience. The story of PAN and Graybill Hospitality."
 >
-  <link slot="head" rel="preload" as="image" href={brianPreload.src} type="image/webp" fetchpriority="high" />
+  <link slot="head" rel="preload" as="image" href={brianPreload.src} type="image/avif" fetchpriority="high" />
 
   <!-- ─── 1. HERO ─────────────────────────────────────────────── -->
   <section aria-label="Story hero" class="bg-paper overflow-hidden border-b border-sage-100">
@@ -26,15 +26,19 @@ const brianPreload = await getImage({ src: brianSrc, width: 600, height: 750, fo
 
       <!-- Portrait: first in DOM (top on mobile), right on desktop -->
       <div class="relative h-[56vw] max-h-[420px] lg:h-auto lg:max-h-none lg:order-2">
-        <Image
+        <Picture
           src={brianSrc}
           alt="Brian Graybill, co-founder of PAN"
+          formats={['avif', 'webp']}
+          fallbackFormat="jpeg"
+          widths={[400, 600]}
+          sizes="(min-width: 1024px) 50vw, min(56vw, 420px)"
           width={600}
           height={750}
-          format="webp"
           loading="eager"
           fetchpriority="high"
-          class="absolute inset-0 w-full h-full object-cover object-top"
+          class="w-full h-full object-cover object-top"
+          pictureAttributes={{ class: "absolute inset-0 block" }}
         />
         {/* TODO(owner): replace with final portrait of Brian Graybill */}
       </div>
