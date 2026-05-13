@@ -1,0 +1,357 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Section from '../components/ui/Section.astro';
+import Container from '../components/ui/Container.astro';
+import Eyebrow from '../components/ui/Eyebrow.astro';
+import Heading from '../components/ui/Heading.astro';
+import Button from '../components/ui/Button.astro';
+import { WEEK_HOURS } from '../lib/hours';
+
+// TODO(owner): replace with Mapbox Static Images API URL once token is available
+import mapSrc from '../assets/images/visit-map.jpg';
+
+const TOAST_URL = 'https://www.toasttab.com/pan-fayetteville';
+const PHONE     = '(910) 491-3105';
+const PHONE_TEL = 'tel:+19104913105';
+const EMAIL     = 'pan@graybillhospitality.com';
+
+const mapPreload = await getImage({ src: mapSrc, width: 800, height: 500, format: 'webp' });
+
+// Schema.org JSON-LD for local SEO
+const schemaData = {
+  '@context': 'https://schema.org',
+  '@type': 'FoodEstablishment',
+  name: 'PAN',
+  description: 'Chef-driven sandwiches in downtown Fayetteville, NC.',
+  url: 'https://panfayetteville.com',
+  telephone: '+19104913105',
+  email: EMAIL,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '105 Hay St',
+    addressLocality: 'Fayetteville',
+    addressRegion: 'NC',
+    postalCode: '28301',
+    addressCountry: 'US',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 35.0527,
+    longitude: -78.8784,
+  },
+  servesCuisine: 'Sandwiches',
+  priceRange: '$$',
+  openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday'], opens: '11:00', closes: '19:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Friday'], opens: '11:00', closes: '20:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Saturday'], opens: '10:00', closes: '17:00' },
+  ],
+};
+
+const safeSchema = JSON.stringify(schemaData)
+  .replace(/</g, '\\u003c')
+  .replace(/>/g, '\\u003e')
+  .replace(/&/g, '\\u0026');
+---
+
+<Base
+  title="Visit | PAN — 105 Hay St, Downtown Fayetteville"
+  description="PAN is at 105 Hay St in downtown Fayetteville, NC. Open Mon–Fri 11am–7pm, Fri until 8pm, Sat 10am–5pm. Order online or call (910) 491-3105."
+>
+  <script type="application/ld+json" set:html={safeSchema} slot="head"></script>
+  <link slot="head" rel="preload" as="image" href={mapPreload.src} type="image/webp" />
+
+  <!-- ─── 1. ADDRESS HERO ──────────────────────────────────────── -->
+  <section
+    class="bg-paper border-b border-sage-100 py-12 lg:py-16"
+    aria-label="Restaurant address"
+    itemscope
+    itemtype="https://schema.org/FoodEstablishment"
+  >
+    <meta itemprop="name" content="PAN" />
+    <meta itemprop="telephone" content="+19104913105" />
+    <Container>
+      <Eyebrow>Find us</Eyebrow>
+      <h1 class="mt-3 font-display text-[clamp(2rem,5vw,4rem)] leading-[1.05] tracking-[-0.025em] text-ink">
+        <address
+          itemprop="address"
+          itemscope
+          itemtype="https://schema.org/PostalAddress"
+          class="not-italic"
+        >
+          <span itemprop="streetAddress">105 Hay St</span>,<br class="sm:hidden" />
+          <span class="sm:inline"> </span>
+          <span itemprop="addressLocality">Downtown Fayetteville</span>
+        </address>
+      </h1>
+      <div class="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 text-lg text-ink-soft">
+        <a
+          href={PHONE_TEL}
+          itemprop="telephone"
+          class="hover:text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded-sm"
+        >
+          {PHONE}
+        </a>
+        <span aria-hidden="true" class="text-sage-300 hidden sm:inline">·</span>
+        <span id="live-status" class="flex items-center gap-2">
+          <span
+            id="status-dot"
+            class="inline-block w-2 h-2 rounded-full bg-ink-soft/30"
+            aria-hidden="true"
+          ></span>
+          <span id="status-text">Checking hours…</span>
+        </span>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ─── 2. HOURS + MAP ───────────────────────────────────────── -->
+  <Section tone="paper">
+    <Container>
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+
+        <!-- Hours table -->
+        <div>
+          <Eyebrow>Hours</Eyebrow>
+          <Heading level={2} class="mt-3">When we&rsquo;re open</Heading>
+          <table class="mt-8 w-full text-base" aria-label="Weekly hours">
+            <tbody>
+              {WEEK_HOURS.map((entry, i) => (
+                <tr
+                  data-day-index={i}
+                  class="border-b border-sage-50 last:border-0"
+                >
+                  <td class="py-3 pr-6 font-medium text-ink w-32">
+                    {entry.fullDay}
+                  </td>
+                  <td class="py-3 text-ink-soft tabular-nums">
+                    {entry.open && entry.close
+                      ? `${entry.open} – ${entry.close}`
+                      : 'Closed'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="mt-6 text-sm text-ink-soft/70">
+            Hours subject to change on holidays. Call ahead to confirm.
+          </p>
+        </div>
+
+        <!-- Map + directions -->
+        <div>
+          <Eyebrow>Location</Eyebrow>
+          <Heading level={2} class="mt-3">Downtown Fayetteville</Heading>
+          <div class="mt-8 relative rounded-sm overflow-hidden bg-sage-50 aspect-[8/5]">
+            <!--
+              TODO(owner): replace with Mapbox Static Images API once token is confirmed.
+              URL pattern: https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/static/
+              pin-l+c55c3a(-78.8784,35.0527)/-78.8784,35.0527,15,0/800x500@2x?access_token=TOKEN
+            -->
+            <img
+              src={mapPreload.src}
+              alt="Map showing PAN at 105 Hay St in downtown Fayetteville"
+              width="800"
+              height="500"
+              loading="lazy"
+              class="w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 flex items-end p-4 bg-gradient-to-t from-ink/20 to-transparent pointer-events-none">
+            </div>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-3">
+            <a
+              href="https://maps.apple.com/?q=PAN+Restaurant&address=105+Hay+St,+Fayetteville,+NC+28301"
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-1.5 text-sm font-medium text-ink-soft border border-sage-200 rounded-full px-4 py-2 hover:bg-sage-50 hover:text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+            >
+              Apple Maps &rarr;
+            </a>
+            <a
+              href="https://www.google.com/maps/dir/?api=1&destination=105+Hay+St,+Fayetteville,+NC+28301"
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-1.5 text-sm font-medium text-ink-soft border border-sage-200 rounded-full px-4 py-2 hover:bg-sage-50 hover:text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+            >
+              Google Maps &rarr;
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 3. INFO CARDS ────────────────────────────────────────── -->
+  <Section tone="cream">
+    <Container>
+      <Eyebrow>Good to know</Eyebrow>
+      <Heading level={2} class="mt-3">Before you arrive</Heading>
+
+      <div class="mt-10 grid sm:grid-cols-2 gap-5">
+
+        <!-- Parking -->
+        <div class="bg-paper rounded-sm border border-sage-100 p-6">
+          <h3 class="font-display text-xl text-ink">Parking</h3>
+          <p class="mt-3 text-sm text-ink-soft leading-relaxed">
+            Street parking is available on Hay St and surrounding blocks. The
+            Hay Street parking deck on Donaldson St is a short walk and offers
+            affordable hourly rates.
+          </p>
+        </div>
+
+        <!-- Accessibility -->
+        <div class="bg-paper rounded-sm border border-sage-100 p-6">
+          <h3 class="font-display text-xl text-ink">Accessibility</h3>
+          <p class="mt-3 text-sm text-ink-soft leading-relaxed">
+            PAN is street-level with step-free entry. If you have specific
+            needs, call us at{' '}
+            <a href={PHONE_TEL} class="underline decoration-sage-300 underline-offset-2 hover:decoration-ink transition-[text-decoration-color]">
+              {PHONE}
+            </a>{' '}
+            and we&rsquo;ll make sure you&rsquo;re taken care of.
+          </p>
+        </div>
+
+        <!-- Dog Policy -->
+        <div class="bg-paper rounded-sm border border-sage-100 p-6">
+          <h3 class="font-display text-xl text-ink">Dogs</h3>
+          <p class="mt-3 text-sm text-ink-soft leading-relaxed">
+            Well-behaved dogs on leash are welcome at our outdoor seating area.
+            We keep a water bowl out front — your dog already knows the way.
+          </p>
+        </div>
+
+        <!-- How We Work -->
+        <div class="bg-paper rounded-sm border border-sage-100 p-6">
+          <h3 class="font-display text-xl text-ink">How We Work</h3>
+          <p class="mt-3 text-sm text-ink-soft leading-relaxed">
+            Order at the counter, find a seat, and we&rsquo;ll bring it out.
+            No reservations, no dress code. We take walk-ins and online
+            orders through Toast — whichever works for you.
+          </p>
+        </div>
+
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 4. CONTACT ───────────────────────────────────────────── -->
+  <Section tone="sage" size="lg">
+    <Container>
+      <div class="text-center">
+        <Eyebrow class="text-sage-100">Contact</Eyebrow>
+        <Heading level={2} class="mt-3 text-paper">Got a question?</Heading>
+        <p class="mt-4 text-lg text-sage-100 leading-relaxed">
+          We&rsquo;re pretty easy to reach.
+        </p>
+        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-6">
+          <a
+            href={PHONE_TEL}
+            class="font-display text-[clamp(1.75rem,4vw,3rem)] text-paper hover:text-sage-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper focus-visible:ring-offset-4 focus-visible:ring-offset-sage-500 rounded-sm leading-none"
+            aria-label={`Call us at ${PHONE}`}
+          >
+            {PHONE}
+          </a>
+          <span class="text-sage-300 hidden sm:inline text-2xl" aria-hidden="true">/</span>
+          <a
+            href={`mailto:${EMAIL}`}
+            class="font-body text-lg text-sage-100 underline decoration-sage-300 underline-offset-4 hover:text-paper hover:decoration-paper transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper focus-visible:ring-offset-4 focus-visible:ring-offset-sage-500 rounded-sm"
+          >
+            {EMAIL}
+          </a>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 5. ORDER CTA ─────────────────────────────────────────── -->
+  <section class="bg-paper border-t border-sage-100 py-14 lg:py-20 text-center" aria-label="Order online">
+    <Container>
+      <p class="text-xl text-ink-soft leading-relaxed mb-8">
+        Skip the line &mdash; order ahead and it&rsquo;ll be ready when you arrive.
+      </p>
+      <Button href={TOAST_URL} variant="terracotta" size="lg" target="_blank" rel="noopener">
+        Order ahead on Toast
+      </Button>
+    </Container>
+  </section>
+
+</Base>
+
+<script>
+  // ── Live open/closed status ──────────────────────────────────────
+  // Runs client-side to get the correct local time; server build time is UTC.
+
+  interface HoursRow { open: string | null; close: string | null; }
+
+  const HOURS: HoursRow[] = [
+    { open: '11:00', close: '19:00' }, // Mon
+    { open: '11:00', close: '19:00' }, // Tue
+    { open: '11:00', close: '19:00' }, // Wed
+    { open: '11:00', close: '19:00' }, // Thu
+    { open: '11:00', close: '20:00' }, // Fri
+    { open: '10:00', close: '17:00' }, // Sat
+    { open: null,    close: null    }, // Sun
+  ];
+
+  function getNowEastern(): { dayIndex: number; hhmm: string } {
+    const now = new Date();
+    const etParts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
+      weekday: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).formatToParts(now);
+
+    const weekdayMap: Record<string, number> = {
+      Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6,
+    };
+    const weekday = etParts.find(p => p.type === 'weekday')?.value ?? 'Sun';
+    const hour    = etParts.find(p => p.type === 'hour')?.value   ?? '00';
+    const minute  = etParts.find(p => p.type === 'minute')?.value ?? '00';
+
+    return {
+      dayIndex: weekdayMap[weekday] ?? 6,
+      hhmm: `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`,
+    };
+  }
+
+  function isOpen(dayIndex: number, hhmm: string): boolean {
+    const row = HOURS[dayIndex];
+    if (!row?.open || !row.close) return false;
+    return hhmm >= row.open && hhmm < row.close;
+  }
+
+  // Update status badge
+  const dot        = document.getElementById('status-dot');
+  const statusText = document.getElementById('status-text');
+
+  if (dot && statusText) {
+    const { dayIndex, hhmm } = getNowEastern();
+    const open = isOpen(dayIndex, hhmm);
+    const row  = HOURS[dayIndex];
+
+    dot.dataset.open = open ? 'true' : 'false';
+    statusText.textContent = open
+      ? `Open now · closes ${row.close!.replace('19:00','7 pm').replace('20:00','8 pm').replace('17:00','5 pm')}`
+      : 'Closed now';
+  }
+
+  // Highlight today's row in the hours table
+  const { dayIndex } = getNowEastern();
+  const todayRow = document.querySelector<HTMLTableRowElement>(`[data-day-index="${dayIndex}"]`);
+  if (todayRow) {
+    todayRow.classList.add('bg-sage-50');
+    todayRow.querySelectorAll('td').forEach(td => td.classList.add('font-semibold', 'text-ink'));
+  }
+</script>
+
+<style>
+  /* Status dot color — driven by data attribute to avoid Tailwind scan issues */
+  #status-dot[data-open='true']  { background-color: var(--color-sage-500); }
+  #status-dot[data-open='false'] { background-color: var(--color-terracotta); }
+</style>
