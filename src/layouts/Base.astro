@@ -8,17 +8,87 @@ import interFontUrl from '@fontsource-variable/inter/files/inter-latin-wght-norm
 interface Props {
   title?: string;
   description?: string;
+  /** Absolute URL to the OG image (1200×630). Falls back to /og-default.jpg */
   ogImage?: string;
+  /** Set to true on transactional/utility pages (thanks, error, style-guide) */
+  noindex?: boolean;
 }
 
+const SITE = 'https://panfayetteville.com';
+
 const {
-  title = 'Pan — Fayetteville',
-  description = 'Pan is a neighborhood restaurant in Fayetteville, AR.',
+  title       = 'PAN — Downtown Fayetteville Sandwich Shop',
+  description = 'Chef-driven sandwiches in downtown Fayetteville, NC. House-baked bread, locally sourced ingredients. Best Sandwich Shop 2024 & 2025 — 105 Hay St.',
   ogImage,
+  noindex = false,
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://panfayetteville.com');
-const ogImageURL   = ogImage ?? `${Astro.site ?? 'https://panfayetteville.com'}/og-default.jpg`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? SITE).href;
+const ogImageURL   = ogImage ?? `${SITE}/og-default.jpg`;
+
+// ── LocalBusiness JSON-LD (rendered on every page) ─────────────────────────
+// Hours sourced from src/lib/hours.ts — update both together.
+// TODO(owner): verify aggregateRating before launch.
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: 'PAN',
+  image: `${SITE}/og-default.jpg`,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '105 Hay St',
+    addressLocality: 'Fayetteville',
+    addressRegion: 'NC',
+    postalCode: '28301',
+    addressCountry: 'US',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 35.0527,
+    longitude: -78.8784,
+  },
+  telephone: '+1-910-491-3105',
+  email: 'pan@graybillhospitality.com',
+  url: SITE,
+  priceRange: '$$',
+  servesCuisine: ['Sandwiches', 'Deli', 'American'],
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'],
+      opens: '11:00',
+      closes: '19:00',
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: 'Friday',
+      opens: '11:00',
+      closes: '20:00',
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: 'Saturday',
+      opens: '10:00',
+      closes: '17:00',
+    },
+  ],
+  acceptsReservations: false,
+  hasMenu: `${SITE}/menu`,
+  sameAs: [
+    'https://www.instagram.com/pansandwiches/',
+    'https://www.facebook.com/panfaync/',
+  ],
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.9',
+    reviewCount: '224',
+  },
+};
+
+const safeSchema = JSON.stringify(localBusinessSchema)
+  .replace(/</g, '\\u003c')
+  .replace(/>/g, '\\u003e')
+  .replace(/&/g, '\\u0026');
 ---
 
 <!doctype html>
@@ -27,24 +97,29 @@ const ogImageURL   = ogImage ?? `${Astro.site ?? 'https://panfayetteville.com'}/
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#FAF7F0" />
+    <meta name="theme-color" content="#f8f6f1" />
 
     <!-- Font preloads — prevents FOUT on display & body fonts -->
     <link rel="preload" href={frauncesFontUrl} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={interFontUrl}    as="font" type="font/woff2" crossorigin />
 
+    <!-- Primary meta -->
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- Open Graph -->
-    <meta property="og:site_name"   content="Pan Restaurant" />
-    <meta property="og:title"       content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url"         content={canonicalURL} />
-    <meta property="og:type"        content="website" />
-    <meta property="og:image"       content={ogImageURL} />
-    <meta property="og:locale"      content="en_US" />
+    <meta property="og:site_name"    content="PAN Restaurant" />
+    <meta property="og:title"        content={title} />
+    <meta property="og:description"  content={description} />
+    <meta property="og:url"          content={canonicalURL} />
+    <meta property="og:type"         content="website" />
+    <meta property="og:image"        content={ogImageURL} />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type"   content="image/jpeg" />
+    <meta property="og:locale"       content="en_US" />
 
     <!-- Twitter / X card -->
     <meta name="twitter:card"        content="summary_large_image" />
@@ -52,10 +127,17 @@ const ogImageURL   = ogImage ?? `${Astro.site ?? 'https://panfayetteville.com'}/
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image"       content={ogImageURL} />
 
+    <!-- Profile verification -->
+    <link rel="me" href="https://www.instagram.com/pansandwiches/" />
+    <link rel="me" href="https://www.facebook.com/panfaync/" />
+
     <!-- Favicons (owner will supply final assets) -->
     <link rel="icon"             type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon"             type="image/x-icon"  href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon"                      href="/apple-touch-icon.png" />
+
+    <!-- LocalBusiness structured data — rendered on every page -->
+    <script type="application/ld+json" set:html={safeSchema}></script>
 
     <!-- Plausible analytics — production only -->
     {import.meta.env.PROD && (

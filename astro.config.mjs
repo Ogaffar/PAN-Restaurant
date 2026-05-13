@@ -11,7 +11,15 @@ export default defineConfig({
   adapter: cloudflare(),
 
   integrations: [
-    sitemap(),
+    sitemap({
+      // /catering is server-rendered (prerender=false) so it won't be auto-discovered
+      customPages: ['https://panfayetteville.com/catering/'],
+      // Exclude transactional/utility pages — they carry noindex anyway
+      filter: page =>
+        !page.includes('/subscribe/') &&
+        !page.includes('/catering/thanks') &&
+        !page.includes('/style-guide'),
+    }),
     mdx(),
     icon({
       include: {
