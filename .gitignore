@@ -26,6 +26,9 @@ pnpm-debug.log*
 # VS Code
 .vscode/
 
+# Cloudflare Wrangler dev state
+.wrangler/
+
 # local env overrides
 .env.local
 .env.*.local
