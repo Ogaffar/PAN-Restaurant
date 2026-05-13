@@ -1,0 +1,47 @@
+---
+import Base from '../../layouts/Base.astro';
+import Container from '../../components/ui/Container.astro';
+import Button from '../../components/ui/Button.astro';
+---
+
+<Base
+  title="Request received | PAN — Catering"
+  description="Your catering inquiry has been received. The PAN team will follow up within 1 business day."
+>
+  <section class="bg-paper min-h-[70vh] flex items-center py-20">
+    <Container>
+      <div class="max-w-xl">
+        <p class="text-5xl" aria-hidden="true">&#10003;</p>
+        <h1 class="mt-6 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] tracking-[-0.025em] text-ink">
+          Thanks &mdash; we&rsquo;ll be in touch.
+        </h1>
+        <p class="mt-5 text-xl text-ink-soft leading-relaxed">
+          We received your catering request and will reply within 1 business
+          day. If you need something sooner, call us at{' '}
+          <a
+            href="tel:+19104913105"
+            class="underline decoration-sage-300 underline-offset-4 hover:decoration-ink transition-[text-decoration-color]"
+          >
+            (910)&nbsp;491-3105
+          </a>.
+        </p>
+        <p class="mt-5 text-lg text-ink-soft leading-relaxed">
+          In the meantime, follow{' '}
+          <a
+            href="https://www.instagram.com/pansandwiches"
+            target="_blank"
+            rel="noopener"
+            class="underline decoration-sage-300 underline-offset-4 hover:decoration-ink transition-[text-decoration-color]"
+          >
+            @pansandwiches
+          </a>{' '}
+          on Instagram for daily specials.
+        </p>
+        <div class="mt-10 flex flex-wrap gap-4">
+          <Button href="/" variant="primary">Back to home</Button>
+          <Button href="/menu" variant="secondary">View the menu</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</Base>

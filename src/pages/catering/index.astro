@@ -1,0 +1,644 @@
+---
+export const prerender = false;
+
+import { actions, isInputError } from 'astro:actions';
+import Base from '../../layouts/Base.astro';
+import Section from '../../components/ui/Section.astro';
+import Container from '../../components/ui/Container.astro';
+import Eyebrow from '../../components/ui/Eyebrow.astro';
+import Heading from '../../components/ui/Heading.astro';
+import Button from '../../components/ui/Button.astro';
+
+const result = Astro.getActionResult(actions.catering);
+
+// Re-populate form values after a server-side validation error
+let posted: Record<string, string> = {};
+if (result?.error && Astro.request.method === 'POST') {
+  const fd = await Astro.request.clone().formData();
+  posted = Object.fromEntries(
+    [...fd.entries()].map(([k, v]) => [k, String(v)])
+  );
+}
+
+// Field-level errors for SSR (no-JS) path
+const fieldErrors = result?.error && isInputError(result.error)
+  ? result.error.fields
+  : {};
+
+const globalError = result?.error && !isInputError(result.error)
+  ? result.error.message
+  : null;
+---
+
+<Base
+  title="Catering | PAN — Downtown Fayetteville"
+  description="PAN caters offices, churches, weddings, and downtown events across greater Fayetteville. Box lunches, party platters, or fully custom menus. Request a quote."
+>
+
+  <!-- ─── 1. HERO ──────────────────────────────────────────────── -->
+  <section class="bg-paper border-b border-sage-100 py-14 lg:py-20">
+    <Container>
+      <Eyebrow>Catering</Eyebrow>
+      <h1 class="mt-3 font-display text-[clamp(2.25rem,5vw,4.5rem)] leading-[1.05] tracking-[-0.025em] text-ink max-w-3xl">
+        Catering for offices, churches, weddings, and downtown events.
+      </h1>
+      <p class="mt-5 text-xl text-ink-soft leading-relaxed max-w-prose">
+        PAN&rsquo;s full kitchen &mdash; boxed, platterized, or buffet-style &mdash;
+        anywhere in greater Fayetteville.
+      </p>
+      <div class="mt-8">
+        <a
+          href="#inquiry-form"
+          class="inline-flex items-center gap-1 font-body text-lg font-medium text-paper bg-terracotta px-6 py-3 rounded-sm hover:bg-[#a84c30] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terracotta focus-visible:ring-offset-2"
+        >
+          Request a quote &darr;
+        </a>
+      </div>
+    </Container>
+  </section>
+
+  <!-- ─── 2. OFFERING TIERS ─────────────────────────────────────── -->
+  <Section tone="paper">
+    <Container>
+      <Eyebrow>What we offer</Eyebrow>
+      <Heading level={2} class="mt-3">Three ways to cater with PAN</Heading>
+
+      <div class="mt-10 grid md:grid-cols-3 gap-6">
+
+        <!-- Box Lunches -->
+        <div class="bg-cream rounded-sm border border-sage-100 p-7 flex flex-col">
+          <div>
+            <p class="text-xs font-medium text-ink-soft/60 tracking-widest uppercase">Individual</p>
+            <h3 class="mt-2 font-display text-2xl text-ink">Box Lunches</h3>
+            <p class="mt-3 text-sm text-ink-soft leading-relaxed">
+              Individual sandwich boxes for offices and meetings. Each box
+              includes a sandwich, a side, and a cookie.
+            </p>
+            <ul class="mt-5 space-y-2 text-sm text-ink-soft">
+              <li class="flex items-start gap-2">
+                <span class="text-sage-500 mt-0.5" aria-hidden="true">&#10003;</span>
+                Individually packaged — no shared platters
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-sage-500 mt-0.5" aria-hidden="true">&#10003;</span>
+                Full sandwich menu available
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-sage-500 mt-0.5" aria-hidden="true">&#10003;</span>
+                Dietary customization on request
+              </li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-5 border-t border-sage-100">
+            {/* TODO(owner): confirm minimum order and per-person price */}
+            <p class="text-sm font-medium text-ink">From $—/person</p>
+            <p class="text-xs text-ink-soft/70 mt-1">Min 10 people — confirm with owner</p>
+          </div>
+        </div>
+
+        <!-- Party Platters -->
+        <div class="bg-cream rounded-sm border border-sage-100 p-7 flex flex-col">
+          <div>
+            <p class="text-xs font-medium text-ink-soft/60 tracking-widest uppercase">Group</p>
+            <h3 class="mt-2 font-display text-2xl text-ink">Party Platters</h3>
+            <p class="mt-3 text-sm text-ink-soft leading-relaxed">
+              Halved sandwiches arranged on platters, perfect for mingling crowds
+              where variety matters.
+            </p>
+            <ul class="mt-5 space-y-2 text-sm text-ink-soft">
+              <li class="flex items-start gap-2">
+                <span class="text-sage-500 mt-0.5" aria-hidden="true">&#10003;</span>
+                Mix of signature sandwiches
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-sage-500 mt-0.5" aria-hidden="true">&#10003;</span>
+                Feeds groups of 12 and up
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-sage-500 mt-0.5" aria-hidden="true">&#10003;</span>
+                Sides and sweets available
+              </li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-5 border-t border-sage-100">
+            {/* TODO(owner): confirm per-person price and platter sizes */}
+            <p class="text-sm font-medium text-ink">From $—/person</p>
+            <p class="text-xs text-ink-soft/70 mt-1">Feeds 12+ — confirm with owner</p>
+          </div>
+        </div>
+
+        <!-- Custom Events -->
+        <div class="bg-cream rounded-sm border border-sage-100 p-7 flex flex-col">
+          <div>
+            <p class="text-xs font-medium text-ink-soft/60 tracking-widest uppercase">Full service</p>
+            <h3 class="mt-2 font-display text-2xl text-ink">Custom Events</h3>
+            <p class="mt-3 text-sm text-ink-soft leading-relaxed">
+              Weddings, corporate offsites, and downtown event days. Full menu
+              collaboration with Chef Brian.
+            </p>
+            <ul class="mt-5 space-y-2 text-sm text-ink-soft">
+              <li class="flex items-start gap-2">
+                <span class="text-sage-500 mt-0.5" aria-hidden="true">&#10003;</span>
+                Custom menu design
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-sage-500 mt-0.5" aria-hidden="true">&#10003;</span>
+                Buffet or station setup
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-sage-500 mt-0.5" aria-hidden="true">&#10003;</span>
+                Direct chef consultation
+              </li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-5 border-t border-sage-100">
+            <p class="text-sm font-medium text-ink">Quoted per event</p>
+            <p class="text-xs text-ink-soft/70 mt-1">Contact us to start the conversation</p>
+          </div>
+        </div>
+
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 3. HOW IT WORKS ───────────────────────────────────────── -->
+  <Section tone="cream">
+    <Container>
+      <Eyebrow>Process</Eyebrow>
+      <Heading level={2} class="mt-3">How it works</Heading>
+
+      <ol class="mt-10 grid sm:grid-cols-3 gap-8" role="list">
+        {[
+          { n: '01', label: 'Send a request', body: 'Fill out the inquiry form below with your event details. We\'ll get back to you within 1 business day.' },
+          { n: '02', label: 'We confirm the details', body: 'We\'ll work with you on menu, headcount, pickup or delivery time, and any dietary needs.' },
+          { n: '03', label: 'We have it ready', body: 'Show up (or we show up). Your food is ready, packaged, and exactly what was agreed.' },
+        ].map(step => (
+          <li class="flex flex-col">
+            <span class="font-display text-5xl text-sage-100 leading-none" aria-hidden="true">{step.n}</span>
+            <h3 class="mt-3 font-display text-xl text-ink">{step.label}</h3>
+            <p class="mt-2 text-sm text-ink-soft leading-relaxed">{step.body}</p>
+          </li>
+        ))}
+      </ol>
+
+      <!-- Lead time callout -->
+      <div class="mt-14 bg-mustard/10 border border-mustard/30 rounded-sm px-7 py-6 flex gap-4 items-start">
+        <span class="text-mustard text-2xl leading-none mt-0.5" aria-hidden="true">&#9888;</span>
+        <div>
+          <p class="font-medium text-ink">Plan ahead</p>
+          <p class="mt-1 text-sm text-ink-soft leading-relaxed">
+            We recommend <strong>72 hours of lead time</strong> for orders under 25 guests,
+            and <strong>one week</strong> for larger events. For same-week requests, call us
+            directly at <a href="tel:+19104913105" class="underline decoration-sage-300 underline-offset-2 hover:text-ink transition-colors">(910)&nbsp;491-3105</a>.
+          </p>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 4. TRUST STRIP ────────────────────────────────────────── -->
+  <Section tone="paper" size="sm">
+    <Container>
+      {/*
+        TODO(owner): replace with catering-specific testimonials or Google reviews
+        that mention large orders or office catering. The excerpts below are
+        general quality signals; catering clients will respond better to direct
+        catering endorsements.
+      */}
+      <div class="grid sm:grid-cols-3 gap-8">
+        {[
+          {
+            quote: 'PAN wins Best Sandwich Shop for the second consecutive year, with readers calling it the most dependable lunch in Fayetteville.',
+            source: 'Best of Fayetteville 2025',
+          },
+          {
+            quote: 'Praised for its house-baked bread, locally sourced ingredients, and a rotating menu that keeps regulars coming back.',
+            source: 'BizFayetteville',
+          },
+          {
+            quote: 'Back-to-back Best Sandwich Shop — a place that genuinely cares about what ends up on your plate.',
+            source: 'Best of Fayetteville 2024 &amp; 2025',
+          },
+        ].map(t => (
+          <blockquote class="border-l-2 border-sage-300 pl-5">
+            <p class="font-display italic text-base text-ink leading-relaxed">
+              &ldquo;{t.quote}&rdquo;
+            </p>
+            <footer class="mt-3 text-xs font-medium text-ink-soft not-italic" set:html={`— ${t.source}`} />
+          </blockquote>
+        ))}
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 5. INQUIRY FORM ───────────────────────────────────────── -->
+  <Section tone="cream" id="inquiry-form">
+    <Container>
+      <Eyebrow>Get a quote</Eyebrow>
+      <Heading level={2} class="mt-3">Tell us about your event</Heading>
+      <p class="mt-4 text-lg text-ink-soft leading-relaxed max-w-prose">
+        Fill out the form and we&rsquo;ll follow up within 1 business day. For
+        urgent requests, call <a href="tel:+19104913105" class="underline decoration-sage-300 underline-offset-2 hover:text-ink transition-colors">(910)&nbsp;491-3105</a>.
+      </p>
+
+      <!-- Global error (SSR path) -->
+      {globalError && (
+        <div role="alert" class="mt-6 bg-terracotta/10 border border-terracotta/30 text-terracotta text-sm px-5 py-4 rounded-sm">
+          {globalError}
+        </div>
+      )}
+
+      <!-- Global error placeholder (JS path, hidden initially) -->
+      <div
+        id="form-global-error"
+        role="alert"
+        aria-live="polite"
+        hidden
+        class="mt-6 bg-terracotta/10 border border-terracotta/30 text-terracotta text-sm px-5 py-4 rounded-sm"
+      ></div>
+
+      <form
+        id="catering-form"
+        method="POST"
+        action={actions.catering}
+        class="mt-10 space-y-8"
+        novalidate
+      >
+
+        <!-- Row 1: Name + Company -->
+        <div class="grid sm:grid-cols-2 gap-6">
+          <div class="field-group">
+            <label for="name" class="field-label">
+              Name <span class="text-terracotta" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              autocomplete="name"
+              value={posted.name ?? ''}
+              class="field-input"
+              aria-describedby="name-error"
+            />
+            <span id="name-error" class="field-error" aria-live="polite">
+              {fieldErrors.name?.[0]}
+            </span>
+          </div>
+
+          <div class="field-group">
+            <label for="company" class="field-label">
+              Company / organization <span class="text-ink-soft/50 text-sm font-normal">(optional)</span>
+            </label>
+            <input
+              id="company"
+              name="company"
+              type="text"
+              autocomplete="organization"
+              value={posted.company ?? ''}
+              class="field-input"
+            />
+          </div>
+        </div>
+
+        <!-- Row 2: Email + Phone -->
+        <div class="grid sm:grid-cols-2 gap-6">
+          <div class="field-group">
+            <label for="email" class="field-label">
+              Email <span class="text-terracotta" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+              value={posted.email ?? ''}
+              class="field-input"
+              aria-describedby="email-error"
+            />
+            <span id="email-error" class="field-error" aria-live="polite">
+              {fieldErrors.email?.[0]}
+            </span>
+          </div>
+
+          <div class="field-group">
+            <label for="phone" class="field-label">
+              Phone <span class="text-terracotta" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              required
+              autocomplete="tel"
+              value={posted.phone ?? ''}
+              class="field-input"
+              aria-describedby="phone-error"
+            />
+            <span id="phone-error" class="field-error" aria-live="polite">
+              {fieldErrors.phone?.[0]}
+            </span>
+          </div>
+        </div>
+
+        <!-- Row 3: Event date + Headcount -->
+        <div class="grid sm:grid-cols-2 gap-6">
+          <div class="field-group">
+            <label for="eventDate" class="field-label">
+              Event date <span class="text-terracotta" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="eventDate"
+              name="eventDate"
+              type="date"
+              required
+              value={posted.eventDate ?? ''}
+              class="field-input"
+              aria-describedby="eventDate-error"
+            />
+            <span id="eventDate-error" class="field-error" aria-live="polite">
+              {fieldErrors.eventDate?.[0]}
+            </span>
+          </div>
+
+          <div class="field-group">
+            <label for="headcount" class="field-label">
+              Approximate headcount <span class="text-terracotta" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="headcount"
+              name="headcount"
+              type="number"
+              required
+              min="1"
+              value={posted.headcount ?? ''}
+              class="field-input"
+              aria-describedby="headcount-error"
+            />
+            <span id="headcount-error" class="field-error" aria-live="polite">
+              {fieldErrors.headcount?.[0]}
+            </span>
+          </div>
+        </div>
+
+        <!-- Service style -->
+        <fieldset class="field-group" aria-describedby="serviceStyle-error">
+          <legend class="field-label">
+            Service style <span class="text-terracotta" aria-hidden="true">*</span>
+          </legend>
+          <div class="mt-2 flex flex-wrap gap-4">
+            {(['boxed', 'platters', 'custom'] as const).map(val => {
+              const labels = { boxed: 'Box lunches', platters: 'Party platters', custom: 'Custom event' };
+              return (
+                <label class="radio-label">
+                  <input
+                    type="radio"
+                    name="serviceStyle"
+                    value={val}
+                    required
+                    checked={posted.serviceStyle === val}
+                    class="radio-input"
+                  />
+                  {labels[val]}
+                </label>
+              );
+            })}
+          </div>
+          <span id="serviceStyle-error" class="field-error" aria-live="polite">
+            {fieldErrors.serviceStyle?.[0]}
+          </span>
+        </fieldset>
+
+        <!-- Pickup or delivery -->
+        <fieldset class="field-group" aria-describedby="fulfillment-error">
+          <legend class="field-label">
+            Pickup or drop-off <span class="text-terracotta" aria-hidden="true">*</span>
+          </legend>
+          <div class="mt-2 flex flex-wrap gap-4">
+            {(['pickup', 'delivery'] as const).map(val => {
+              const labels = { pickup: 'Pickup', delivery: 'Drop-off / Delivery' };
+              return (
+                <label class="radio-label">
+                  <input
+                    type="radio"
+                    name="fulfillment"
+                    value={val}
+                    required
+                    checked={posted.fulfillment === val}
+                    class="radio-input"
+                  />
+                  {labels[val]}
+                </label>
+              );
+            })}
+          </div>
+          <span id="fulfillment-error" class="field-error" aria-live="polite">
+            {fieldErrors.fulfillment?.[0]}
+          </span>
+        </fieldset>
+
+        <!-- Pickup/delivery time -->
+        <div class="field-group">
+          <label for="fulfillmentTime" class="field-label">
+            Pickup or delivery time <span class="text-terracotta" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="fulfillmentTime"
+            name="fulfillmentTime"
+            type="text"
+            required
+            placeholder="e.g. 11:30 AM, around noon"
+            value={posted.fulfillmentTime ?? ''}
+            class="field-input"
+            aria-describedby="fulfillmentTime-error"
+          />
+          <span id="fulfillmentTime-error" class="field-error" aria-live="polite">
+            {fieldErrors.fulfillmentTime?.[0]}
+          </span>
+        </div>
+
+        <!-- Dietary needs -->
+        <div class="field-group">
+          <label for="dietary" class="field-label">
+            Dietary needs / allergens <span class="text-ink-soft/50 text-sm font-normal">(optional)</span>
+          </label>
+          <textarea
+            id="dietary"
+            name="dietary"
+            rows={3}
+            placeholder="e.g. 3 guests are gluten-free, 1 is vegan"
+            class="field-input resize-y"
+          >{posted.dietary ?? ''}</textarea>
+        </div>
+
+        <!-- Anything else -->
+        <div class="field-group">
+          <label for="notes" class="field-label">
+            Anything else <span class="text-ink-soft/50 text-sm font-normal">(optional)</span>
+          </label>
+          <textarea
+            id="notes"
+            name="notes"
+            rows={3}
+            placeholder="Budget, special setup requests, questions for Chef Brian…"
+            class="field-input resize-y"
+          >{posted.notes ?? ''}</textarea>
+        </div>
+
+        <!-- Honeypot — hidden from real users, visible to bots -->
+        <div
+          aria-hidden="true"
+          style="position:absolute;left:-9999px;height:1px;width:1px;overflow:hidden;opacity:0;"
+        >
+          <label for="website-hp">Website (leave blank)</label>
+          <input
+            id="website-hp"
+            name="website"
+            type="text"
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- Submit -->
+        <div class="pt-2">
+          <button
+            id="submit-btn"
+            type="submit"
+            class="inline-flex items-center justify-center gap-2 font-body font-medium rounded-sm transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sage-700 disabled:opacity-50 disabled:pointer-events-none bg-terracotta text-paper hover:bg-[#a84c30] active:bg-[#8f3f27] text-lg px-8 py-4"
+          >
+            Send request
+          </button>
+          <p class="mt-3 text-sm text-ink-soft/70">
+            We reply within 1 business day. No spam — ever.
+          </p>
+        </div>
+
+      </form>
+    </Container>
+  </Section>
+
+</Base>
+
+<style>
+  .field-group { display: flex; flex-direction: column; gap: 0.375rem; }
+
+  .field-label {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .field-input {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-ink);
+    background: var(--color-paper);
+    border: 1px solid var(--color-sage-200, #c8d9b8);
+    border-radius: 2px;
+    padding: 0.625rem 0.875rem;
+    width: 100%;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--color-sage-500);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-sage-500) 15%, transparent);
+  }
+  .field-input[aria-invalid='true'] {
+    border-color: var(--color-terracotta);
+  }
+
+  .field-error {
+    font-size: 0.8125rem;
+    color: var(--color-terracotta);
+    min-height: 1em;
+  }
+  .field-error:empty { display: none; }
+
+  .radio-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-ink-soft);
+    cursor: pointer;
+  }
+  .radio-input {
+    accent-color: var(--color-sage-500);
+    width: 1rem;
+    height: 1rem;
+  }
+</style>
+
+<script>
+  import { actions, isInputError } from 'astro:actions';
+
+  const form = document.getElementById('catering-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+  const globalErrorEl = document.getElementById('form-global-error') as HTMLElement | null;
+
+  if (!form || !submitBtn) throw new Error('catering form elements missing');
+
+  function clearErrors(): void {
+    form!.querySelectorAll<HTMLElement>('.field-error').forEach(el => {
+      el.textContent = '';
+    });
+    form!.querySelectorAll<HTMLElement>('.field-input').forEach(el => {
+      el.removeAttribute('aria-invalid');
+    });
+    if (globalErrorEl) {
+      globalErrorEl.hidden = true;
+      globalErrorEl.textContent = '';
+    }
+  }
+
+  function showFieldError(fieldName: string, message: string): void {
+    const errEl = document.getElementById(`${fieldName}-error`);
+    if (errEl) errEl.textContent = message;
+    // Mark the input/fieldset as invalid
+    const input = form!.querySelector<HTMLElement>(`[name="${fieldName}"]`);
+    if (input) input.setAttribute('aria-invalid', 'true');
+  }
+
+  function showGlobalError(message: string): void {
+    if (!globalErrorEl) return;
+    globalErrorEl.textContent = message;
+    globalErrorEl.hidden = false;
+    globalErrorEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearErrors();
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    const { data, error } = await actions.catering(new FormData(form));
+
+    if (error) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send request';
+
+      if (isInputError(error)) {
+        const fields = error.fields as Record<string, string[] | undefined>;
+        for (const [field, messages] of Object.entries(fields)) {
+          showFieldError(field, messages?.[0] ?? 'Invalid value');
+        }
+        // Scroll to first error
+        const firstErr = form.querySelector<HTMLElement>('.field-error:not(:empty)');
+        firstErr?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        showGlobalError(error.message ?? 'Something went wrong. Please try again or call us directly.');
+      }
+      return;
+    }
+
+    // Success
+    window.location.href = '/catering/thanks';
+  });
+</script>
