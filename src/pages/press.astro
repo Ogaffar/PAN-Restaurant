@@ -1,0 +1,310 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Section from '../components/ui/Section.astro';
+import Container from '../components/ui/Container.astro';
+import Eyebrow from '../components/ui/Eyebrow.astro';
+import Heading from '../components/ui/Heading.astro';
+
+const allPress = await getCollection('press');
+const pressItems = allPress.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+function fmtDate(d: Date): string {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  }).format(d);
+}
+
+// ── Press kit placeholder assets (owner to supply final files) ───────────────
+const KIT_ITEMS = [
+  {
+    label: 'Logo pack',
+    detail: 'SVG + PNG, light and dark variants',
+    // TODO(owner): replace with real zip URL once files are uploaded to CDN
+    href: '#press-kit-logo',
+    icon: '&#128462;',
+    aria: 'Download PAN logo pack (zip)',
+  },
+  {
+    label: 'Hi-res food photography',
+    detail: 'TIFF + JPEG, print-ready',
+    // TODO(owner): replace with real zip URL once files are uploaded to CDN
+    href: '#press-kit-photos',
+    icon: '&#128247;',
+    aria: 'Download hi-res food photography (zip)',
+  },
+  {
+    label: 'Founder bio',
+    detail: 'Brian & Staci Graybill — 100 & 300 word versions',
+    // TODO(owner): replace with real PDF URL
+    href: '#press-kit-bio',
+    icon: '&#128196;',
+    aria: 'Download founder biography PDF',
+  },
+  {
+    label: 'Fact sheet',
+    detail: 'Opening date, address, concept overview, accolades',
+    // TODO(owner): replace with real PDF URL
+    href: '#press-kit-facts',
+    icon: '&#128203;',
+    aria: 'Download PAN fact sheet PDF',
+  },
+] as const;
+
+// ── Google reviews ────────────────────────────────────────────────────────────
+// TODO(owner): replace each placeholder below with verbatim text and reviewer
+// first name from the Google reviews in your research report. Do not paraphrase.
+// Layout alternates left / right — keep quotes under ~140 characters each.
+const REVIEWS = [
+  { text: null, reviewer: null, pos: 'left' },
+  { text: null, reviewer: null, pos: 'right' },
+  { text: null, reviewer: null, pos: 'left' },
+  { text: null, reviewer: null, pos: 'right' },
+  { text: null, reviewer: null, pos: 'left' },
+] as const;
+---
+
+<Base
+  title="Press & Praise | PAN — Downtown Fayetteville"
+  description="PAN has been recognised as Fayetteville's best sandwich shop two years running. Press features, awards, customer reviews, and press kit downloads."
+>
+
+  <!-- ─── 1. HEADER ────────────────────────────────────────────── -->
+  <section class="bg-paper border-b border-sage-100 py-14 lg:py-20">
+    <Container>
+      <Eyebrow>Press &amp; praise</Eyebrow>
+      <h1 class="mt-3 font-display text-[clamp(2.5rem,6vw,5rem)] leading-[1.05] tracking-[-0.025em] text-ink">
+        Press &amp; Praise
+      </h1>
+      <p class="mt-5 text-xl text-ink-soft leading-relaxed max-w-prose">
+        PAN in Fayetteville, in the words of others.
+      </p>
+    </Container>
+  </section>
+
+  <!-- ─── 2. AWARDS ────────────────────────────────────────────── -->
+  <Section tone="cream">
+    <Container>
+      <Eyebrow>Recognition</Eyebrow>
+      <Heading level={2} class="mt-3">Awards &amp; accolades</Heading>
+
+      <div class="mt-10 grid md:grid-cols-2 gap-6">
+
+        <!-- Best Sandwich Shop -->
+        <!--
+          TODO(owner): The spec listed "Up & Coming Weekly" for this award,
+          but our press records show "Best of Fayetteville" reader poll.
+          Confirm the correct publication before launch.
+        -->
+        <div class="bg-paper rounded-sm border border-sage-100 p-8 flex flex-col gap-6">
+          <div class="text-4xl text-mustard leading-none" aria-hidden="true">&#127942;</div>
+          <div>
+            <p class="font-body text-xs font-medium tracking-[0.18em] uppercase text-sage-500">
+              2024 &amp; 2025
+            </p>
+            <h3 class="mt-2 font-display text-2xl text-ink leading-snug">
+              Best Sandwich Shop
+            </h3>
+            <p class="mt-1 text-base text-ink-soft">Fayetteville, NC</p>
+          </div>
+          <p class="text-sm text-ink-soft leading-relaxed flex-1">
+            Back-to-back winner in the annual Best of Fayetteville reader
+            poll &mdash; two consecutive years recognized by the community as
+            the city&rsquo;s best.
+          </p>
+          <div class="flex items-center justify-between pt-4 border-t border-sage-100">
+            <span class="text-sm font-medium text-ink-soft">Best of Fayetteville</span>
+            <a
+              href="https://bestoffayetteville.com/2025/winners/best-sandwich-shop"
+              target="_blank"
+              rel="noopener"
+              class="text-sm font-medium text-sage-700 underline decoration-sage-300 underline-offset-4 hover:decoration-sage-700 transition-[text-decoration-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded-sm"
+              aria-label="See Best of Fayetteville 2025 Best Sandwich Shop award (opens in new tab)"
+            >
+              See award &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Forty Under Forty -->
+        <div class="bg-paper rounded-sm border border-sage-100 p-8 flex flex-col gap-6">
+          <div class="text-4xl text-mustard leading-none" aria-hidden="true">&#11088;</div>
+          <div>
+            {/* TODO(owner): confirm the year of the Forty Under Forty recognition */}
+            <p class="font-body text-xs font-medium tracking-[0.18em] uppercase text-sage-500">
+              Year TBC &mdash; confirm with owner
+            </p>
+            <h3 class="mt-2 font-display text-2xl text-ink leading-snug">
+              Forty Under Forty
+            </h3>
+            <p class="mt-1 text-base text-ink-soft">Brian Graybill</p>
+          </div>
+          <p class="text-sm text-ink-soft leading-relaxed flex-1">
+            Brian Graybill was named to the Fayetteville Observer&rsquo;s
+            Forty Under Forty, recognizing emerging business and community
+            leaders across the region.
+          </p>
+          <div class="flex items-center justify-between pt-4 border-t border-sage-100">
+            <span class="text-sm font-medium text-ink-soft">Fayetteville Observer</span>
+            {/* TODO(owner): add link to Fayetteville Observer article once confirmed */}
+            <span class="text-sm text-ink-soft/50 italic">Link pending</span>
+          </div>
+        </div>
+
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 3. PRESS FEATURES ─────────────────────────────────────── -->
+  <Section tone="paper">
+    <Container>
+      <Eyebrow>In the press</Eyebrow>
+      <Heading level={2} class="mt-3">Coverage &amp; features</Heading>
+
+      <ol class="mt-12" role="list">
+        {pressItems.map((item, i) => (
+          <li class:list={['py-10', i !== 0 && 'border-t border-sage-100']}>
+            <article>
+              <header class="flex flex-col sm:flex-row sm:items-baseline sm:gap-6 gap-1">
+                <p class="font-body text-xs font-medium tracking-[0.18em] uppercase text-sage-500 shrink-0">
+                  {item.data.publication}
+                </p>
+                <time
+                  datetime={item.data.date.toISOString().slice(0, 10)}
+                  class="text-xs text-ink-soft/60 tabular-nums"
+                >
+                  {fmtDate(item.data.date)}
+                </time>
+              </header>
+
+              <h3 class="mt-3 font-display text-[1.375rem] leading-snug text-ink">
+                {item.data.title}
+              </h3>
+
+              <p class="mt-3 text-base text-ink-soft leading-relaxed max-w-prose">
+                {item.data.excerpt}
+              </p>
+
+              <a
+                href={item.data.url}
+                target="_blank"
+                rel="noopener"
+                class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-sage-700 underline decoration-sage-300 underline-offset-4 hover:decoration-sage-700 transition-[text-decoration-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded-sm"
+                aria-label={`Read "${item.data.title}" at ${item.data.publication} (opens in new tab)`}
+              >
+                Read at {item.data.publication} &rarr;
+              </a>
+            </article>
+          </li>
+        ))}
+      </ol>
+    </Container>
+  </Section>
+
+  <!-- ─── 4. CUSTOMER REVIEWS ───────────────────────────────────── -->
+  <Section tone="paper" class="border-t border-sage-50">
+    <Container>
+      <Eyebrow>From the community</Eyebrow>
+      <Heading level={2} class="mt-3">What guests say</Heading>
+      <p class="mt-4 text-sm text-ink-soft/60 italic">
+        via Google Reviews
+      </p>
+
+      {/*
+        TODO(owner): For each review below, replace `text` with the verbatim
+        review text and `reviewer` with the reviewer's first name, copied
+        exactly from your research report. Do not paraphrase or combine reviews.
+        Reviews must be real, attributed Google reviews.
+      */}
+
+      <div class="mt-12 space-y-10">
+        {REVIEWS.map((r, i) => (
+          r.text ? (
+            <div class:list={[
+              'max-w-2xl',
+              r.pos === 'right' ? 'ml-auto text-right' : '',
+            ]}>
+              <blockquote class:list={[
+                'border-l-2 border-sage-300 pl-6',
+                r.pos === 'right' ? 'border-l-0 border-r-2 pr-6 pl-0' : '',
+              ]}>
+                <p class="font-display italic text-xl text-ink leading-relaxed">
+                  &ldquo;{r.text}&rdquo;
+                </p>
+                <footer class="mt-4 text-sm text-ink-soft not-italic">
+                  &mdash; {r.reviewer}
+                  <span class="ml-2 text-xs text-ink-soft/50">via Google</span>
+                </footer>
+              </blockquote>
+            </div>
+          ) : (
+            <div class:list={[
+              'max-w-2xl border border-dashed border-sage-200 rounded-sm p-6',
+              i % 2 === 1 ? 'ml-auto' : '',
+            ]} aria-hidden="true">
+              <p class="text-sm text-ink-soft/40 italic">
+                &#9998; Owner: paste verbatim Google review #{i + 1} here (see research report)
+              </p>
+            </div>
+          )
+        ))}
+      </div>
+    </Container>
+  </Section>
+
+  <!-- ─── 5. PRESS KIT ─────────────────────────────────────────── -->
+  <Section tone="cream">
+    <Container>
+      <Eyebrow>Downloads</Eyebrow>
+      <Heading level={2} class="mt-3">Press kit</Heading>
+      <p class="mt-4 text-lg text-ink-soft leading-relaxed max-w-prose">
+        Everything you need to cover PAN. High-resolution assets, founder
+        biography, and background information — all in one place.
+      </p>
+
+      <div class="mt-10 grid sm:grid-cols-2 gap-4">
+        {KIT_ITEMS.map(item => (
+          <a
+            href={item.href}
+            class="group flex items-start gap-4 bg-paper rounded-sm border border-sage-100 p-6 hover:border-sage-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+            aria-label={item.aria}
+            download
+          >
+            <span class="text-3xl leading-none shrink-0 mt-0.5" aria-hidden="true" set:html={item.icon} />
+            <div>
+              <p class="font-display text-lg text-ink group-hover:text-sage-700 transition-colors">
+                {item.label}
+              </p>
+              <p class="mt-1 text-sm text-ink-soft">{item.detail}</p>
+            </div>
+            <span class="ml-auto text-ink-soft/40 group-hover:text-sage-500 transition-colors text-lg" aria-hidden="true">
+              &darr;
+            </span>
+          </a>
+        ))}
+      </div>
+
+      <!-- Press inquiry contact -->
+      <div class="mt-12 pt-10 border-t border-sage-200 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+        <div>
+          <p class="font-medium text-ink">Press inquiries</p>
+          <p class="mt-1 text-sm text-ink-soft">
+            For interview requests, additional assets, or fact-checking, reach out directly.
+          </p>
+        </div>
+        <a
+          href="mailto:pan@graybillhospitality.com"
+          class="shrink-0 inline-flex items-center gap-2 font-body text-base font-medium text-sage-700 underline decoration-sage-300 underline-offset-4 hover:decoration-sage-700 transition-[text-decoration-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded-sm"
+        >
+          pan@graybillhospitality.com
+        </a>
+      </div>
+    </Container>
+  </Section>
+
+</Base>
