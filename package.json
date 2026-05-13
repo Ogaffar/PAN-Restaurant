@@ -9,9 +9,12 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "a11y:dev": "node scripts/pa11y-audit.mjs",
+    "a11y:axe": "axe http://localhost:4321/ http://localhost:4321/menu http://localhost:4321/story http://localhost:4321/visit http://localhost:4321/catering http://localhost:4321/press --exit"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.5.0",
     "@astrojs/mdx": "^5.0.4",
     "@astrojs/sitemap": "^3.7.2",
     "@fontsource-variable/fraunces": "^5.2.9",
@@ -27,5 +30,10 @@
     "resend": "^6.12.3",
     "tailwindcss": "^4.3.0",
     "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@axe-core/cli": "^4.11.3",
+    "axe-core": "^4.11.4",
+    "pa11y": "^9.1.1"
   }
 }

@@ -22,8 +22,9 @@ const TOAST_URL = 'https://www.toasttab.com/pan-fayetteville';
   class="sticky top-0 z-[100] h-16 lg:h-[72px] border-b border-transparent transition-[border-color,background-color] duration-200"
 >
   <!--
-    Checkbox is the first DOM child so it precedes both the inner bar
-    and the mobile overlay — required for Tailwind peer-checked to work.
+    Hidden checkbox drives CSS :has() animations (hamburger→X, overlay show).
+    JS manages open/close state and programmatically toggles it.
+    aria-hidden + tabindex=-1: never reached by keyboard or AT.
   -->
   <input
     type="checkbox"
@@ -72,25 +73,23 @@ const TOAST_URL = 'https://www.toasttab.com/pan-fayetteville';
       </a>
     </nav>
 
-    <!-- Hamburger toggle label (mobile only) -->
-    <label
-      for="nav-toggle"
-      id="nav-toggle-label"
+    <!-- Hamburger button (mobile only) -->
+    <button
+      type="button"
+      id="nav-toggle-btn"
       aria-label="Open navigation"
       aria-expanded="false"
       aria-controls="mobile-nav"
-      class="hamburger-btn relative z-10 lg:hidden flex flex-col justify-center gap-[5px] w-10 h-10 -mr-2 cursor-pointer rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700"
-      tabindex="0"
+      class="hamburger-btn relative z-10 lg:hidden flex flex-col justify-center gap-[5px] w-10 h-10 -mr-2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-700 focus-visible:ring-offset-2"
     >
       <span class="ham-bar ham-top  block h-[2px] w-[22px] mx-auto bg-ink origin-center transition-transform duration-200"></span>
       <span class="ham-bar ham-mid  block h-[2px] w-[22px] mx-auto bg-ink transition-opacity duration-200"></span>
       <span class="ham-bar ham-bot  block h-[2px] w-[22px] mx-auto bg-ink origin-center transition-transform duration-200"></span>
-      <span class="sr-only">Toggle navigation</span>
-    </label>
+    </button>
 
   </div><!-- /inner bar -->
 
-  <!-- Mobile overlay — peer sibling to #nav-toggle -->
+  <!-- Mobile overlay -->
   <div
     id="mobile-nav"
     class="mobile-nav fixed inset-0 top-0 bg-paper flex-col px-6 pt-24 pb-10 overflow-y-auto lg:hidden"
@@ -132,13 +131,12 @@ const TOAST_URL = 'https://www.toasttab.com/pan-fayetteville';
   </div><!-- /mobile-nav -->
 </header>
 
-<!-- Body scroll lock + show/hide overlay via :has() -->
+<!-- Body scroll lock + overlay via :has() -->
 <style is:global>
   body:has(#nav-toggle:checked) {
     overflow: hidden;
   }
 
-  /* Scrolled state — class toggled by IntersectionObserver script */
   #site-header.scrolled {
     background-color: color-mix(in srgb, var(--color-paper) 92%, transparent);
     backdrop-filter: blur(12px);
@@ -159,16 +157,13 @@ const TOAST_URL = 'https://www.toasttab.com/pan-fayetteville';
 </style>
 
 <style>
-  /* Mobile nav: hidden by default, flex when checkbox checked */
   .mobile-nav {
     display: none;
   }
-  /* :global needed because the :has() target is body, outside component scope */
   :global(body:has(#nav-toggle:checked)) .mobile-nav {
     display: flex;
   }
 
-  /* Active nav link — sage underline indicator */
   .nav-link.is-active {
     position: relative;
   }
@@ -182,12 +177,6 @@ const TOAST_URL = 'https://www.toasttab.com/pan-fayetteville';
     background-color: var(--color-sage-500);
     border-radius: 1px;
   }
-
-  /* Keyboard-accessible hamburger label (label isn't inherently focusable) */
-  .hamburger-btn:focus-visible {
-    outline: 2px solid var(--color-sage-700);
-    outline-offset: 2px;
-  }
 </style>
 
 <script>
@@ -195,45 +184,57 @@ const TOAST_URL = 'https://www.toasttab.com/pan-fayetteville';
   const header = document.getElementById('site-header');
   const onScroll = () => header?.classList.toggle('scrolled', window.scrollY > 4);
   window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll(); // set initial state
+  onScroll();
 
-  // Sync aria-expanded on the label when checkbox changes
-  const toggle = document.getElementById('nav-toggle') as HTMLInputElement | null;
-  const label  = document.getElementById('nav-toggle-label');
+  const toggle    = document.getElementById('nav-toggle') as HTMLInputElement | null;
+  const btn       = document.getElementById('nav-toggle-btn') as HTMLButtonElement | null;
+  const mobileNav = document.getElementById('mobile-nav');
 
-  const syncAria = () => {
-    const open = toggle?.checked ?? false;
-    label?.setAttribute('aria-expanded', String(open));
-    label?.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
-  };
+  function syncAria(open: boolean): void {
+    btn?.setAttribute('aria-expanded', String(open));
+    btn?.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+  }
 
-  toggle?.addEventListener('change', syncAria);
+  function openMenu(): void {
+    if (toggle) toggle.checked = true;
+    syncAria(true);
+    // Move focus to first focusable element in the dialog
+    const first = mobileNav?.querySelector<HTMLElement>('a[href], button:not([disabled])');
+    first?.focus();
+  }
 
-  // Allow Enter/Space on the label (it's a <label> with tabindex=0)
-  label?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      if (toggle) {
-        toggle.checked = !toggle.checked;
-        syncAria();
-      }
+  function closeMenu(): void {
+    if (toggle) toggle.checked = false;
+    syncAria(false);
+    btn?.focus();
+  }
+
+  btn?.addEventListener('click', () => {
+    toggle?.checked ? closeMenu() : openMenu();
+  });
+
+  // Focus trap: keep Tab/Shift+Tab inside the open dialog
+  mobileNav?.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (!toggle?.checked || e.key !== 'Tab') return;
+    const focusables = Array.from(
+      mobileNav.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')
+    );
+    const first = focusables[0];
+    const last  = focusables[focusables.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+    } else {
+      if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
     }
   });
 
-  // Escape closes the menu
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && toggle?.checked) {
-      toggle.checked = false;
-      syncAria();
-      label?.focus();
-    }
+  // Escape closes and returns focus to the trigger
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && toggle?.checked) closeMenu();
   });
 
-  // Close menu and uncheck when nav link is clicked (route change)
-  document.getElementById('mobile-nav')?.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      if (toggle) toggle.checked = false;
-      syncAria();
-    });
+  // Close on nav link click (same-page or client-side navigation)
+  mobileNav?.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', closeMenu);
   });
 </script>

@@ -70,7 +70,7 @@ const activeBadges = dietary.filter(d => d in BADGES);
         ) : (
           <abbr
             title="Ask in store"
-            class="text-lg text-ink-soft/50 no-underline cursor-help"
+            class="text-lg text-ink-soft no-underline cursor-help"
             aria-label="Price on request — ask in store"
           >—</abbr>
         )}
@@ -82,7 +82,7 @@ const activeBadges = dietary.filter(d => d in BADGES);
 
     <!-- Ingredients -->
     {ingredients.length > 0 && (
-      <p class="mt-1.5 text-[0.8125rem] text-ink-soft/70 leading-normal">
+      <p class="mt-1.5 text-[0.8125rem] text-ink-soft leading-normal">
         {ingredients.join(', ')}
       </p>
     )}
@@ -103,7 +103,7 @@ const activeBadges = dietary.filter(d => d in BADGES);
 
     <!-- Seasonal note -->
     {availability === 'seasonal' && (
-      <p class="mt-2 text-xs text-ink-soft/70 italic">Seasonal — ask about availability</p>
+      <p class="mt-2 text-xs text-ink-soft italic">Seasonal — ask about availability</p>
     )}
   </div>
 </article>

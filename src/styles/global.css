@@ -20,7 +20,7 @@
   --color-ink-soft: #3d4039;
   --color-paper: #f8f6f1;
   --color-cream: #fdf9f2;
-  --color-terracotta: #c55c3a;
+  --color-terracotta: #ac4d2f; /* darkened from #c55c3a for WCAG AA (4.5:1 on paper) */
   --color-mustard: #c49928;
 
   /* Font families */

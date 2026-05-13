@@ -152,7 +152,7 @@ const REVIEWS = [
           <div class="flex items-center justify-between pt-4 border-t border-sage-100">
             <span class="text-sm font-medium text-ink-soft">Fayetteville Observer</span>
             {/* TODO(owner): add link to Fayetteville Observer article once confirmed */}
-            <span class="text-sm text-ink-soft/50 italic">Link pending</span>
+            <span class="text-sm text-ink-soft italic">Link pending</span>
           </div>
         </div>
 
@@ -176,7 +176,7 @@ const REVIEWS = [
                 </p>
                 <time
                   datetime={item.data.date.toISOString().slice(0, 10)}
-                  class="text-xs text-ink-soft/60 tabular-nums"
+                  class="text-xs text-ink-soft tabular-nums"
                 >
                   {fmtDate(item.data.date)}
                 </time>
@@ -211,7 +211,7 @@ const REVIEWS = [
     <Container>
       <Eyebrow>From the community</Eyebrow>
       <Heading level={2} class="mt-3">What guests say</Heading>
-      <p class="mt-4 text-sm text-ink-soft/60 italic">
+      <p class="mt-4 text-sm text-ink-soft italic">
         via Google Reviews
       </p>
 
@@ -238,7 +238,7 @@ const REVIEWS = [
                 </p>
                 <footer class="mt-4 text-sm text-ink-soft not-italic">
                   &mdash; {r.reviewer}
-                  <span class="ml-2 text-xs text-ink-soft/50">via Google</span>
+                  <span class="ml-2 text-xs text-ink-soft">via Google</span>
                 </footer>
               </blockquote>
             </div>
@@ -270,6 +270,7 @@ const REVIEWS = [
       <div class="mt-10 grid sm:grid-cols-2 gap-4">
         {KIT_ITEMS.map(item => (
           <a
+            id={item.href.startsWith('#') ? item.href.slice(1) : undefined}
             href={item.href}
             class="group flex items-start gap-4 bg-paper rounded-sm border border-sage-100 p-6 hover:border-sage-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
             aria-label={item.aria}

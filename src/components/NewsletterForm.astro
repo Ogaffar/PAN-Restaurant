@@ -15,14 +15,14 @@ interface Props {
 const { inputId, variant = 'light' } = Astro.props;
 
 const inputCls = variant === 'dark'
-  ? 'bg-paper/10 border-paper/20 text-paper placeholder:text-paper/40 focus:ring-sage-300'
-  : 'bg-cream border-sage-200 text-ink placeholder:text-ink-soft/60 focus:ring-sage-500';
+  ? 'bg-paper/10 border-paper/20 text-paper placeholder:text-paper/70 focus:ring-sage-300'
+  : 'bg-cream border-sage-200 text-ink placeholder:text-ink-soft focus:ring-sage-500';
 
 const btnCls = variant === 'dark'
   ? 'bg-sage-500 text-paper hover:bg-sage-700 focus-visible:ring-sage-300 focus-visible:ring-offset-ink'
   : 'bg-sage-500 text-paper hover:bg-sage-700 focus-visible:ring-sage-700 focus-visible:ring-offset-paper';
 
-const privacyCls = variant === 'dark' ? 'text-paper/40' : 'text-ink-soft/60';
+const privacyCls = variant === 'dark' ? 'text-paper/60' : 'text-ink-soft';
 const privacyLinkCls = variant === 'dark'
   ? 'underline decoration-paper/30 hover:decoration-paper/70 transition-[text-decoration-color]'
   : 'underline decoration-sage-300 hover:decoration-sage-500 transition-[text-decoration-color]';
@@ -76,10 +76,12 @@ const successCls = variant === 'dark' ? 'text-sage-300' : 'text-sage-700';
     </button>
   </div>
 
-  <!-- Status (aria-live so screen readers announce changes) -->
+  <!-- Status: role=status + aria-live=polite for screen reader announcements -->
   <p
     data-status
+    role="status"
     aria-live="polite"
+    aria-atomic="true"
     class:list={['mt-2 text-sm min-h-[1.25em]']}
   ></p>
 

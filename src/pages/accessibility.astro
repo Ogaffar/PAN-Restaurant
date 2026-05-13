@@ -1,0 +1,161 @@
+---
+import Base from '../layouts/Base.astro';
+import Container from '../components/ui/Container.astro';
+import Section from '../components/ui/Section.astro';
+import Eyebrow from '../components/ui/Eyebrow.astro';
+import Heading from '../components/ui/Heading.astro';
+
+const LAST_UPDATED = '2026-05-12';
+const EMAIL = 'pan@graybillhospitality.com';
+---
+
+<Base
+  title="Accessibility | PAN — Downtown Fayetteville"
+  description="PAN's accessibility statement. We are committed to WCAG 2.2 AA conformance. Learn how to report issues or request assistance."
+>
+
+  <!-- Header -->
+  <section class="bg-paper border-b border-sage-100 py-14 lg:py-20">
+    <Container>
+      <Eyebrow>Accessibility</Eyebrow>
+      <h1 class="mt-3 font-display text-[clamp(2rem,5vw,4rem)] leading-[1.05] tracking-[-0.025em] text-ink">
+        Accessibility Statement
+      </h1>
+      <p class="mt-5 text-xl text-ink-soft leading-relaxed max-w-prose">
+        PAN is committed to making its website usable by everyone, regardless
+        of ability or technology.
+      </p>
+    </Container>
+  </section>
+
+  <!-- Body -->
+  <Section tone="paper">
+    <Container>
+      <div class="max-w-prose space-y-12">
+
+        <!-- Conformance target -->
+        <div>
+          <Heading level={2} class="mt-0">Our target</Heading>
+          <p class="mt-4 text-base text-ink-soft leading-relaxed">
+            We aim to meet <strong class="font-semibold text-ink">WCAG 2.2 Level AA</strong> — the
+            internationally recognised standard for web accessibility — across
+            all pages of <a href="https://panfayetteville.com" class="underline decoration-sage-300 underline-offset-4 hover:decoration-ink transition-[text-decoration-color]">panfayetteville.com</a>.
+            This includes conformance with all four POUR principles: Perceivable,
+            Operable, Understandable, and Robust.
+          </p>
+          <p class="mt-4 text-base text-ink-soft leading-relaxed">
+            We test with automated tools (pa11y, axe-core) and manual keyboard
+            and screen-reader review. We fix every Critical and Serious violation
+            before deploying.
+          </p>
+        </div>
+
+        <!-- Technical approach -->
+        <div>
+          <Heading level={2}>Technical approach</Heading>
+          <ul class="mt-4 space-y-3 text-base text-ink-soft leading-relaxed list-disc pl-5">
+            <li>Semantic HTML5 landmarks: <code class="font-mono text-sm bg-sage-50 px-1.5 py-0.5 rounded">&lt;header&gt;</code>, <code class="font-mono text-sm bg-sage-50 px-1.5 py-0.5 rounded">&lt;main&gt;</code>, <code class="font-mono text-sm bg-sage-50 px-1.5 py-0.5 rounded">&lt;nav&gt;</code>, <code class="font-mono text-sm bg-sage-50 px-1.5 py-0.5 rounded">&lt;footer&gt;</code></li>
+            <li>Skip navigation link that becomes visible on keyboard focus</li>
+            <li>All interactive elements are keyboard-reachable and have visible 2 px focus rings</li>
+            <li>Colour contrast meets 4.5:1 minimum for all body text and 3:1 for large text</li>
+            <li>All images have descriptive <code class="font-mono text-sm bg-sage-50 px-1.5 py-0.5 rounded">alt</code> text; decorative images use <code class="font-mono text-sm bg-sage-50 px-1.5 py-0.5 rounded">alt=""</code></li>
+            <li>Forms use <code class="font-mono text-sm bg-sage-50 px-1.5 py-0.5 rounded">&lt;label&gt;</code> elements associated with every input</li>
+            <li>Error messages are associated with fields via <code class="font-mono text-sm bg-sage-50 px-1.5 py-0.5 rounded">aria-describedby</code> and announced via <code class="font-mono text-sm bg-sage-50 px-1.5 py-0.5 rounded">aria-live</code></li>
+            <li>Mobile navigation dialog traps focus when open and returns focus to the trigger on close</li>
+            <li>No ARIA attributes are used to override native semantics unless necessary</li>
+          </ul>
+        </div>
+
+        <!-- Known limitations -->
+        <div>
+          <Heading level={2}>Known limitations</Heading>
+          <ul class="mt-4 space-y-3 text-base text-ink-soft leading-relaxed list-disc pl-5">
+            <li>
+              <strong class="font-semibold text-ink">Press kit downloads</strong> — placeholder links
+              (<code class="font-mono text-sm bg-sage-50 px-1.5 py-0.5 rounded">#press-kit-*</code>) are not yet connected to real files.
+              Once live assets are uploaded, all download links will be tested for
+              accessibility.
+            </li>
+            <li>
+              <strong class="font-semibold text-ink">Map image</strong> — the static map on the Visit
+              page uses a placeholder image. When replaced with the live Mapbox tile,
+              we will verify its alt text and provide a text alternative with the full
+              address.
+            </li>
+            <li>
+              <strong class="font-semibold text-ink">Third-party order widget</strong> — the Toast
+              online ordering interface is provided by a third party. We cannot
+              control its accessibility, but we encourage Toast to meet WCAG 2.2 AA
+              and have linked to it with descriptive labels.
+            </li>
+            <li>
+              <strong class="font-semibold text-ink">Google reviews</strong> — review placeholders on
+              the Press page will be replaced with real review text before launch. All
+              review content will be readable text, not images.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Assistive technology -->
+        <div>
+          <Heading level={2}>Tested with</Heading>
+          <ul class="mt-4 space-y-2 text-base text-ink-soft leading-relaxed list-disc pl-5">
+            <li>Chrome + axe DevTools (automated)</li>
+            <li>pa11y CLI (automated, WCAG2AA standard)</li>
+            <li>Keyboard-only navigation (Tab, Shift+Tab, Enter, Space, Escape)</li>
+            <li>VoiceOver on macOS Safari</li>
+            <li>NVDA on Windows Chrome</li>
+          </ul>
+        </div>
+
+        <!-- How to report -->
+        <div>
+          <Heading level={2}>Report an issue</Heading>
+          <p class="mt-4 text-base text-ink-soft leading-relaxed">
+            If you experience any difficulty using this site — or if you need
+            content in an alternative format — please contact us:
+          </p>
+          <ul class="mt-4 space-y-2 text-base text-ink-soft leading-relaxed list-disc pl-5">
+            <li>
+              Email:
+              <a
+                href={`mailto:${EMAIL}`}
+                class="text-sage-700 underline decoration-sage-300 underline-offset-4 hover:decoration-sage-700 transition-[text-decoration-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded-sm"
+              >
+                {EMAIL}
+              </a>
+            </li>
+            <li>
+              Phone:
+              <a
+                href="tel:+19104913105"
+                class="text-sage-700 underline decoration-sage-300 underline-offset-4 hover:decoration-sage-700 transition-[text-decoration-color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded-sm"
+              >
+                (910) 491-3105
+              </a>
+              (during restaurant hours)
+            </li>
+          </ul>
+          <p class="mt-4 text-base text-ink-soft leading-relaxed">
+            We aim to acknowledge all accessibility reports within 2 business
+            days and to resolve confirmed issues as quickly as possible.
+          </p>
+        </div>
+
+        <!-- Last updated -->
+        <div class="pt-4 border-t border-sage-100">
+          <p class="text-sm text-ink-soft">
+            Last reviewed:
+            <time datetime={LAST_UPDATED}>
+              {new Date(LAST_UPDATED + 'T00:00:00Z').toLocaleDateString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
+              })}
+            </time>
+          </p>
+        </div>
+
+      </div>
+    </Container>
+  </Section>
+
+</Base>
