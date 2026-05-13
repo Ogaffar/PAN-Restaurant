@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import Container from '../../components/ui/Container.astro';
+import Button from '../../components/ui/Button.astro';
+---
+
+<Base
+  title="Subscription error | PAN"
+  description="Something went wrong while subscribing. Please try again."
+>
+  <section class="bg-paper min-h-[60vh] flex items-center py-20">
+    <Container>
+      <div class="max-w-md">
+        <p class="text-4xl" aria-hidden="true">&#9888;</p>
+        <h1 class="mt-6 font-display text-[clamp(2rem,5vw,3rem)] leading-[1.05] tracking-[-0.025em] text-ink">
+          Something went wrong.
+        </h1>
+        <p class="mt-4 text-lg text-ink-soft leading-relaxed">
+          We couldn&rsquo;t save your email right now. Please try again &mdash;
+          or call us at{' '}
+          <a href="tel:+19104913105" class="underline decoration-sage-300 underline-offset-4 hover:decoration-ink transition-[text-decoration-color]">
+            (910)&nbsp;491-3105
+          </a>{' '}
+          if it keeps happening.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <Button href="/#newsletter" variant="primary">Try again</Button>
+          <Button href="/" variant="secondary">Back to home</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</Base>

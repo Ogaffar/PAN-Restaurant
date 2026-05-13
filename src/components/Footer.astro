@@ -1,5 +1,6 @@
 ---
 import { Icon } from 'astro-icon/components';
+import NewsletterForm from './NewsletterForm.astro';
 
 const currentYear = new Date().getFullYear();
 
@@ -115,29 +116,7 @@ const hours = [
           <p class="font-body text-sm font-medium text-paper/80 mb-3">
             Stay in the loop
           </p>
-          <form
-            action="/api/subscribe"
-            method="post"
-            aria-label="Email newsletter signup"
-            class="flex flex-col sm:flex-row gap-2"
-          >
-            <label for="footer-email" class="sr-only">Email address</label>
-            <input
-              type="email"
-              id="footer-email"
-              name="email"
-              placeholder="your@email.com"
-              required
-              autocomplete="email"
-              class="flex-1 min-w-0 px-3 py-2.5 rounded-sm bg-paper/10 border border-paper/20 text-paper placeholder:text-paper/40 font-body text-sm focus:outline-none focus:ring-2 focus:ring-sage-300 focus:border-transparent transition-colors"
-            />
-            <button
-              type="submit"
-              class="shrink-0 px-4 py-2.5 bg-sage-500 text-paper font-body text-sm font-medium rounded-sm hover:bg-sage-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-300 focus-visible:ring-offset-2 focus-visible:ring-offset-ink whitespace-nowrap"
-            >
-              Subscribe
-            </button>
-          </form>
+          <NewsletterForm inputId="footer-email" variant="dark" />
         </div>
       </div>
 

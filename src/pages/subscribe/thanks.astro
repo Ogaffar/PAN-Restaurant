@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import Container from '../../components/ui/Container.astro';
+import Button from '../../components/ui/Button.astro';
+
+// The `?invalid=1` param is set by the no-JS path when email validation failed.
+// We can't read it server-side on a prerendered page, so client JS handles it.
+---
+
+<Base
+  title="You're subscribed | PAN"
+  description="Thanks for subscribing to the PAN newsletter."
+>
+  <section class="bg-paper min-h-[60vh] flex items-center py-20">
+    <Container>
+      <div class="max-w-md" id="sub-content">
+        <!-- Default: success. JS swaps to error message if ?invalid=1 is set. -->
+        <p class="text-4xl" aria-hidden="true" id="sub-icon">&#10003;</p>
+        <h1 id="sub-heading" class="mt-6 font-display text-[clamp(2rem,5vw,3rem)] leading-[1.05] tracking-[-0.025em] text-ink">
+          You&rsquo;re on the list.
+        </h1>
+        <p id="sub-body" class="mt-4 text-lg text-ink-soft leading-relaxed">
+          Expect 1&ndash;2 emails a month: new sandwiches, seasonal specials,
+          and the occasional love letter about bread.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <Button href="/" variant="primary">Back to home</Button>
+          <Button href="/menu" variant="secondary">See the menu</Button>
+        </div>
+      </div>
+    </Container>
+  </section>
+</Base>
+
+<script>
+  // No-JS fallback path sets ?invalid=1 for bad email submissions
+  if (new URLSearchParams(location.search).get('invalid') === '1') {
+    const icon = document.getElementById('sub-icon');
+    const heading = document.getElementById('sub-heading');
+    const body = document.getElementById('sub-body');
+    if (icon) icon.textContent = '✗';
+    if (heading) heading.textContent = 'That email doesn\'t look right.';
+    if (body) body.textContent =
+      'Head back and double-check the address — we want to make sure the specials find you.';
+  }
+</script>

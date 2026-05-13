@@ -1,0 +1,159 @@
+---
+/**
+ * NewsletterForm — reusable newsletter signup form.
+ *
+ * Props:
+ *   inputId   — unique HTML id for the email input (required; avoids id collisions
+ *               when the component is used in both the footer and homepage)
+ *   variant   — 'light' (paper bg, default) | 'dark' (ink bg)
+ */
+interface Props {
+  inputId: string;
+  variant?: 'light' | 'dark';
+}
+
+const { inputId, variant = 'light' } = Astro.props;
+
+const inputCls = variant === 'dark'
+  ? 'bg-paper/10 border-paper/20 text-paper placeholder:text-paper/40 focus:ring-sage-300'
+  : 'bg-cream border-sage-200 text-ink placeholder:text-ink-soft/60 focus:ring-sage-500';
+
+const btnCls = variant === 'dark'
+  ? 'bg-sage-500 text-paper hover:bg-sage-700 focus-visible:ring-sage-300 focus-visible:ring-offset-ink'
+  : 'bg-sage-500 text-paper hover:bg-sage-700 focus-visible:ring-sage-700 focus-visible:ring-offset-paper';
+
+const privacyCls = variant === 'dark' ? 'text-paper/40' : 'text-ink-soft/60';
+const privacyLinkCls = variant === 'dark'
+  ? 'underline decoration-paper/30 hover:decoration-paper/70 transition-[text-decoration-color]'
+  : 'underline decoration-sage-300 hover:decoration-sage-500 transition-[text-decoration-color]';
+
+const errorCls = variant === 'dark' ? 'text-[#f87171]' : 'text-terracotta';
+const successCls = variant === 'dark' ? 'text-sage-300' : 'text-sage-700';
+---
+
+<form
+  data-newsletter-form
+  action="/api/subscribe"
+  method="POST"
+  aria-label="Email newsletter signup"
+  novalidate
+>
+  <!-- Honeypot — invisible to real users, filled by some bots -->
+  <div
+    aria-hidden="true"
+    style="position:absolute;left:-9999px;height:1px;width:1px;overflow:hidden;opacity:0;"
+  >
+    <label for={`${inputId}-hp`}>Website (leave blank)</label>
+    <input id={`${inputId}-hp`} name="website" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="flex flex-col sm:flex-row gap-2">
+    <label for={inputId} class="sr-only">Email address</label>
+    <input
+      id={inputId}
+      name="email"
+      type="email"
+      required
+      autocomplete="email"
+      placeholder="your@email.com"
+      class:list={[
+        'flex-1 min-w-0 px-3 py-2.5 rounded-sm border font-body text-sm',
+        'focus:outline-none focus:ring-2 focus:border-transparent transition-colors',
+        inputCls,
+      ]}
+    />
+    <button
+      type="submit"
+      data-default-label="Subscribe"
+      class:list={[
+        'shrink-0 px-4 py-2.5 font-body text-sm font-medium rounded-sm whitespace-nowrap',
+        'transition-colors duration-150 disabled:opacity-60 disabled:pointer-events-none',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+        btnCls,
+      ]}
+    >
+      Subscribe
+    </button>
+  </div>
+
+  <!-- Status (aria-live so screen readers announce changes) -->
+  <p
+    data-status
+    aria-live="polite"
+    class:list={['mt-2 text-sm min-h-[1.25em]']}
+  ></p>
+
+  <!-- Privacy note -->
+  <p class:list={['mt-1.5 text-xs leading-relaxed', privacyCls]}>
+    1&ndash;2 emails a month. Unsubscribe anytime.{' '}
+    <a href="/privacy" class={privacyLinkCls}>Privacy policy</a>.
+  </p>
+</form>
+
+<script>
+  // Scoped to [data-newsletter-form] so multiple instances work independently.
+  document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]').forEach(form => {
+    const input  = form.querySelector<HTMLInputElement>('input[name="email"]');
+    const btn    = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const status = form.querySelector<HTMLElement>('[data-status]');
+    if (!input || !btn || !status) return;
+
+    const defaultLabel = btn.dataset.defaultLabel ?? 'Subscribe';
+
+    // Derive colour classes from the current text colour of the status element
+    // by checking if the form is on a dark background (look for paper/40 class).
+    const isDark = form.closest('[class*="bg-ink"]') !== null
+      || status.className.includes('paper');
+
+    function setStatus(msg: string, type: 'success' | 'error' | '') {
+      status!.textContent = msg;
+      status!.className = [
+        'mt-2 text-sm min-h-[1.25em]',
+        type === 'success' ? (isDark ? 'text-sage-300' : 'text-sage-700') : '',
+        type === 'error'   ? (isDark ? 'text-[#f87171]' : 'text-terracotta') : '',
+      ].join(' ');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = input.value.trim();
+
+      // Client-side validation before hitting the server
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setStatus('Please enter a valid email address.', 'error');
+        input.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      setStatus('', '');
+
+      try {
+        const res = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, website: '' }),
+        });
+
+        const data = await res.json() as { ok: boolean; error?: string };
+
+        if (data.ok) {
+          setStatus('You\'re on the list — thanks!', 'success');
+          input.value = '';
+          btn.textContent = '✓ Subscribed';
+          // Keep button disabled — prevents double-subscribe
+        } else {
+          setStatus(data.error ?? 'Something went wrong. Please try again.', 'error');
+          btn.disabled = false;
+          btn.textContent = defaultLabel;
+        }
+      } catch {
+        setStatus('Network error — please try again.', 'error');
+        btn.disabled = false;
+        btn.textContent = defaultLabel;
+      }
+    });
+  });
+</script>

@@ -7,6 +7,7 @@ import Heading from '../components/ui/Heading.astro';
 import Eyebrow from '../components/ui/Eyebrow.astro';
 import Button from '../components/ui/Button.astro';
 import Link from '../components/ui/Link.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
 import { getFeaturedMenu } from '../lib/menu';
 import { getTodayHours, getTodayIndex, WEEK_HOURS } from '../lib/hours';
 
@@ -332,19 +333,9 @@ const todayIndex = getTodayIndex();
         <p class="mt-4 text-ink-soft">
           New sandwiches, seasonal specials, and the occasional love letter about bread.
         </p>
-        <form action="/api/subscribe" method="POST" class="mt-8 flex flex-col sm:flex-row gap-3">
-          <label class="sr-only" for="newsletter-email">Email address</label>
-          <input
-            id="newsletter-email"
-            type="email"
-            name="email"
-            placeholder="your@email.com"
-            required
-            autocomplete="email"
-            class="flex-1 px-4 py-3 rounded-sm border border-sage-200 bg-cream text-ink placeholder:text-ink-soft/60 focus:outline-none focus:ring-2 focus:ring-sage-500 focus:ring-offset-1 text-base"
-          />
-          <Button type="submit" variant="primary">Subscribe</Button>
-        </form>
+        <div class="mt-8 text-left">
+          <NewsletterForm inputId="newsletter-email" variant="light" />
+        </div>
       </div>
     </Container>
   </Section>
