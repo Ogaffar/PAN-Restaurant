@@ -142,6 +142,7 @@ const successCls = variant === 'dark' ? 'text-sage-300' : 'text-sage-700';
         const data = await res.json() as { ok: boolean; error?: string };
 
         if (data.ok) {
+          (window as any).plausible?.('newsletter_subscribe');
           setStatus('You\'re on the list — thanks!', 'success');
           input.value = '';
           btn.textContent = '✓ Subscribed';

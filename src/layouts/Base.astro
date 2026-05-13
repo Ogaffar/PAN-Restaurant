@@ -164,5 +164,18 @@ const safeSchema = JSON.stringify(localBusinessSchema)
     <Footer />
 
     <slot name="after-footer" />
+
+    <!-- Plausible custom event tracking (outbound links, phone, directions) -->
+    <script>
+      declare global { interface Window { plausible?: (e: string) => void } }
+      document.addEventListener('click', (ev) => {
+        const a = (ev.target as Element).closest<HTMLAnchorElement>('a[href]');
+        if (!a) return;
+        const href = a.href;
+        if (href.includes('toasttab.com'))                               window.plausible?.('order_toast_click');
+        else if (href.startsWith('tel:'))                                window.plausible?.('phone_click');
+        else if (href.includes('maps.google.com') || href.includes('maps.apple.com')) window.plausible?.('directions_click');
+      });
+    </script>
   </body>
 </html>

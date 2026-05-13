@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "typecheck": "astro check",
     "a11y:dev": "node scripts/pa11y-audit.mjs",
     "a11y:axe": "axe http://localhost:4321/ http://localhost:4321/menu http://localhost:4321/story http://localhost:4321/visit http://localhost:4321/catering http://localhost:4321/press --exit"
   },
@@ -34,6 +35,7 @@
   "devDependencies": {
     "@axe-core/cli": "^4.11.3",
     "axe-core": "^4.11.4",
-    "pa11y": "^9.1.1"
+    "pa11y": "^9.1.1",
+    "sharp": "^0.34.5"
   }
 }

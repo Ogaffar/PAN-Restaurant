@@ -46,3 +46,11 @@ import Button from '../../components/ui/Button.astro';
     </Container>
   </section>
 </Base>
+
+<script>
+  // Fire catering_submit once per session; guards against browser-back re-fires
+  if (!sessionStorage.getItem('pan_catering_tracked')) {
+    sessionStorage.setItem('pan_catering_tracked', '1');
+    (window as any).plausible?.('catering_submit');
+  }
+</script>

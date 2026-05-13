@@ -33,10 +33,6 @@ export default defineConfig({
     }),
   ],
 
-  image: {
-    domains: ['panfayetteville.com'],
-  },
-
   vite: {
     plugins: [tailwindcss()],
   },

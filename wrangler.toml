@@ -1,0 +1,22 @@
+# Cloudflare Pages — PAN Restaurant
+# Docs: https://developers.cloudflare.com/pages/
+# Local dev: wrangler pages dev dist/client
+
+name = "pan-fayetteville"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist/client"
+
+# Static assets binding — "ASSETS" is the Pages default but wrangler ≥4.90 flags
+# it as "reserved" when it appears in a generated prerender config. Setting an
+# explicit name here avoids that validation error.
+[assets]
+binding = "STATIC_ASSETS"
+
+# KV namespace for session storage (used by @astrojs/cloudflare for rate-limiting etc.)
+# Create with: wrangler kv namespace create SESSION
+# Then replace the placeholder IDs below.
+[[kv_namespaces]]
+binding    = "SESSION"
+id         = "REPLACE_WITH_KV_NAMESPACE_ID"
+preview_id = "REPLACE_WITH_KV_PREVIEW_NAMESPACE_ID"

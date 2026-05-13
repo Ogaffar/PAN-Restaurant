@@ -168,7 +168,7 @@ export const server = {
       await Promise.all([
         resend.emails.send({
           from: 'PAN Catering Form <form@panfayetteville.com>',
-          to: 'pan@graybillhospitality.com',
+          to: import.meta.env.OWNER_EMAIL ?? 'pan@graybillhospitality.com',
           replyTo: input.email,
           subject: `Catering inquiry — ${input.name}${input.company ? ` (${input.company})` : ''}, ${input.headcount} guests, ${input.eventDate}`,
           html: ownerHtml(input),

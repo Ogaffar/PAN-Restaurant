@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-audit:
+    name: Type-check · Build · pa11y
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+        env:
+          # Real keys not needed for a build-only check; leave unset so the
+          # catering/subscribe actions gracefully skip email delivery.
+          RESEND_API_KEY: ''
+          RESEND_AUDIENCE_ID: ''
+          OWNER_EMAIL: 'ci@example.com'
+
+      - name: Accessibility audit (pa11y)
+        run: |
+          npm run dev &
+          DEV_PID=$!
+          echo "Waiting for dev server on :4321…"
+          until curl -sf http://localhost:4321/ > /dev/null 2>&1; do sleep 1; done
+          echo "Server ready — running pa11y"
+          node scripts/pa11y-audit.mjs
+          kill $DEV_PID
+        env:
+          RESEND_API_KEY: ''
+          RESEND_AUDIENCE_ID: ''
+          OWNER_EMAIL: 'ci@example.com'
